@@ -1,0 +1,29 @@
+@model EMIT.Models.Utilisateur
+
+@{
+    ViewData["Title"] = "Supprimer l'utilisateur";
+}
+
+<h1>Supprimer l'utilisateur</h1>
+
+<div class="alert alert-warning">Êtes-vous sûr de vouloir supprimer ce compte ? Cette action est irréversible.</div>
+
+<dl class="row">
+    <dt class="col-sm-3">Nom</dt>
+    <dd class="col-sm-9">@Model.Nom @Model.Prenom</dd>
+    <dt class="col-sm-3">Email</dt>
+    <dd class="col-sm-9">@Model.Email</dd>
+    <dt class="col-sm-3">Rôle</dt>
+    <dd class="col-sm-9">@Model.Role</dd>
+    @if (Model.Classe != null)
+    {
+        <dt class="col-sm-3">Classe</dt>
+        <dd class="col-sm-9">@Model.Classe.NomClasse</dd>
+    }
+</dl>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="IdUtilisateur" />
+    <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>

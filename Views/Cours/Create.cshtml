@@ -1,0 +1,62 @@
+@model EMIT.Models.Cours
+
+@{
+    ViewData["Title"] = "Ajouter un cours";
+}
+
+<h1>Ajouter un cours</h1>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form asp-action="Create">
+    <div class="form-group mb-3">
+        <label asp-for="IdClasse" class="control-label">Classe</label>
+        <select asp-for="IdClasse" class="form-control" asp-items="ViewBag.IdClasse">
+            <option value="">-- Sélectionner --</option>
+        </select>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="IdSalle" class="control-label">Salle</label>
+        <select asp-for="IdSalle" class="form-control" asp-items="ViewBag.IdSalle">
+            <option value="">-- Sélectionner --</option>
+        </select>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="IdEnseignant" class="control-label">Enseignant</label>
+        <select asp-for="IdEnseignant" class="form-control" asp-items="ViewBag.IdEnseignant">
+            <option value="">-- Sélectionner --</option>
+        </select>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="IdMatiere" class="control-label">Matière</label>
+        <select asp-for="IdMatiere" class="form-control" asp-items="ViewBag.IdMatiere">
+            <option value="">-- Sélectionner --</option>
+        </select>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Jour" class="control-label">Jour</label>
+        <select asp-for="Jour" class="form-control" asp-items="Html.GetEnumSelectList<EMIT.Models.JourSemaine>()"></select>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="HeureDebut" class="control-label">Heure de début</label>
+        <input asp-for="HeureDebut" type="time" class="form-control" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="HeureFin" class="control-label">Heure de fin</label>
+        <input asp-for="HeureFin" type="time" class="form-control" />
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="DerogationExceptionnelle" class="form-check-input" />
+        <label asp-for="DerogationExceptionnelle" class="form-check-label">Dérogation exceptionnelle (ex: mercredi après-midi)</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>

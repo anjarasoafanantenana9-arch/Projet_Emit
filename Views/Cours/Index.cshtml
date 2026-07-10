@@ -1,0 +1,50 @@
+@model IEnumerable<EMIT.Models.Cours>
+
+@{
+    ViewData["Title"] = "Emploi du temps";
+}
+
+<h1>Emploi du temps</h1>
+
+@if (TempData["Succes"] != null)
+{
+    <div class="alert alert-success">@TempData["Succes"]</div>
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">+ Ajouter un cours</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Jour</th>
+            <th>Heure début</th>
+            <th>Heure fin</th>
+            <th>Classe</th>
+            <th>Salle</th>
+            <th>Enseignant</th>
+            <th>Matière</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Jour</td>
+            <td>@item.HeureDebut.ToString(@"hh\:mm")</td>
+            <td>@item.HeureFin.ToString(@"hh\:mm")</td>
+            <td>@item.Classe?.NomClasse</td>
+            <td>@item.Salle?.NomSalle</td>
+            <td>@item.Enseignant?.Nom @item.Enseignant?.Prenom</td>
+            <td>@item.Matiere?.NomMatiere</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdCours">Modifier</a> |
+                <a asp-action="Details" asp-route-id="@item.IdCours">Détails</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdCours">Supprimer</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

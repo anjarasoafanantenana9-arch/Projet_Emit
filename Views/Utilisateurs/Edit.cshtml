@@ -1,0 +1,50 @@
+@model EMIT.Models.Utilisateur
+
+@{
+    ViewData["Title"] = "Modifier l'utilisateur";
+}
+
+<h1>Modifier l'utilisateur</h1>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form asp-action="Edit" method="post" style="max-width: 480px;">
+    <input type="hidden" asp-for="IdUtilisateur" />
+    <p><strong>Rôle :</strong> @Model.Role <em>(non modifiable)</em></p>
+
+    <div class="form-group mb-3">
+        <label asp-for="Nom" class="control-label"></label>
+        <input asp-for="Nom" class="form-control" />
+        <span asp-validation-for="Nom" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Prenom" class="control-label"></label>
+        <input asp-for="Prenom" class="form-control" />
+        <span asp-validation-for="Prenom" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Email" class="control-label"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    @if (Model.Role == EMIT.Models.RoleUtilisateur.Etudiant)
+    {
+        <div class="form-group mb-3">
+            <label asp-for="IdClasse" class="control-label">Classe</label>
+            <select asp-for="IdClasse" class="form-control" asp-items="ViewBag.IdClasse">
+                <option value="">-- Sélectionner --</option>
+            </select>
+            <span asp-validation-for="IdClasse" class="text-danger"></span>
+        </div>
+    }
+
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

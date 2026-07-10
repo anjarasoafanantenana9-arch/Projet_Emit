@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMIT - Authentification</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons pour les icônes d'enveloppe, cadenas, etc. -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            /* Superposition d'un dégradé bleu nuit sur l'image d'arrière-plan */
+            background: linear-gradient(rgba(6, 25, 53, 0.85), rgba(4, 15, 34, 0.92)), url('/images/unnamed.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #ffffff;
+            padding: 20px;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 520px;
+            text-align: center;
+        }
+
+        /* Force le logo EMIT à devenir blanc pur pour correspondre au design Glion */
+        .logo-box {
+            background: rgba(255, 255, 255, 0.95); /* Fond blanc pur et propre pour faire ressortir le logo */
+            padding: 15px 25px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-bottom: 30px;
+            max-width: 280px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); /* Ombre élégante autour du logo */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo-emit {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .welcome-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 0.95rem;
+            margin-bottom: 35px;
+        }
+
+        /* Style des onglets (Connexion / Inscription) façon liens épurés */
+        .nav-custom {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 30px;
+            border: none;
+        }
+
+            .nav-custom .nav-link {
+                background: none;
+                border: none;
+                color: rgba(255, 255, 255, 0.5);
+                font-weight: 600;
+                font-size: 1rem;
+                padding: 5px 0;
+                position: relative;
+                transition: color 0.3s ease;
+            }
+
+                .nav-custom .nav-link:hover {
+                    color: #ffffff;
+                }
+
+                .nav-custom .nav-link.active {
+                    color: #ffffff;
+                    background: none;
+                }
+
+                    /* Petite ligne sous l'onglet actif */
+                    .nav-custom .nav-link.active::after {
+                        content: '';
+                        position: absolute;
+                        bottom: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 2px;
+                        background-color: #ffffff;
+                    }
+
+        /* Style des groupes d'input épurés (Outline blanc) */
+        .input-group-custom {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+            .input-group-custom .bi {
+                position: absolute;
+                left: 18px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 1.2rem;
+                z-index: 10;
+            }
+
+        .form-control-custom, .form-select-custom {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 14px 14px 14px 50px;
+            color: #ffffff !important;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        /* Style pour l'élément select (Rôle) */
+        .form-select-custom {
+            padding-left: 50px;
+            cursor: pointer;
+        }
+
+            .form-select-custom option {
+                background-color: #061935;
+                color: #ffffff;
+            }
+
+            .form-control-custom:focus, .form-select-custom:focus {
+                background: rgba(255, 255, 255, 0.08);
+                border-color: #ffffff;
+                box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+                outline: none;
+            }
+
+        .form-control-custom::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Bouton d'action principal (SIGN IN) */
+        .btn-submit-custom {
+            background: transparent;
+            border: 1px solid #ffffff;
+            color: #ffffff;
+            padding: 12px 40px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            display: inline-block;
+            min-width: 160px;
+        }
+
+            .btn-submit-custom:hover {
+                background: #ffffff;
+                color: #061935;
+                box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+            }
+
+        /* Pied de page */
+        .footer-text {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.85rem;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <!-- Logo EMIT (Converti en blanc via CSS) -->
+        <div class="logo-box">
+            <img src="/images/emit-logo.png" alt="Logo EMIT" class="logo-emit">
+        </div>
+
+        <h1 class="welcome-title">Ravi de vous revoir !</h1>
+        <p class="subtitle">Gestion des Salles et Emplois du Temps — EMIT</p>
+
+        <!-- Zone d'affichage des messages (Bootstrap Alert stylisée) -->
+        <div id="authAlert" class="alert d-none bg-transparent border-white text-white mb-4" role="alert"></div>
+
+        <!-- Onglets Connexion / Inscription façon Glion -->
+        <ul class="nav nav-custom" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="tab-login" data-bs-toggle="pill" data-bs-target="#panel-login" type="button" role="tab">Connexion</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tab-register" data-bs-toggle="pill" data-bs-target="#panel-register" type="button" role="tab">Inscription</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="pills-tabContent">
+            <!-- FORMULAIRE DE CONNEXION -->
+            <div class="tab-pane fade show active" id="panel-login" role="tabpanel">
+                <form id="formLogin">
+                    <div class="input-group-custom">
+                        <i class="bi bi-envelope"></i>
+                        <input type="email" class="form-control-custom" id="loginEmail" placeholder="Adresse Email (nom@emit.unifianar.mg)" required>
+                    </div>
+                    <div class="input-group-custom">
+                        <i class="bi bi-lock"></i>
+                        <input type="password" class="form-control-custom" id="loginPassword" placeholder="Mot de passe" required>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-submit-custom">Se connecter &rsaquo;</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- FORMULAIRE D'INSCRIPTION -->
+            <div class="tab-pane fade" id="panel-register" role="tabpanel">
+                <form id="formRegister">
+                    <div class="input-group-custom">
+                        <i class="bi bi-envelope"></i>
+                        <input type="email" class="form-control-custom" id="regEmail" placeholder="Adresse Email (nom@emit.unifianar.mg)" required>
+                    </div>
+                    <div class="input-group-custom">
+                        <i class="bi bi-lock"></i>
+                        <input type="password" class="form-control-custom" id="regPassword" placeholder="Mot de passe" required>
+                    </div>
+                    <div class="input-group-custom">
+                        <i class="bi bi-person-badge"></i>
+                        <select class="form-select-custom" id="regRole" required>
+                            <option value="" disabled selected hidden>Choisissez votre profil / rôle</option>
+                            <option value="Admin">Administrateur (Gestion complète)</option>
+                            <option value="Prof">Enseignant (Consultation)</option>
+                            <option value="Etudiant">Étudiant (Consultation)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-submit-custom">Créer un compte &rsaquo;</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="footer-text">
+            Université de Fianarantsoa — 2026
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const AUTH_API = '/api/auth';
+        const alertBox = document.getElementById('authAlert');
+
+        function afficherMessage(texte, estSucces) {
+            alertBox.className = estSucces ? "alert bg-transparent border-success text-success py-2" : "alert bg-transparent border-danger text-danger py-2";
+            alertBox.innerText = texte;
+            alertBox.classList.remove('d-none');
+        }
+
+        // --- TRAITEMENT DE L'INSCRIPTION ---
+        document.getElementById('formRegister').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            alertBox.classList.add('d-none');
+
+            const payload = {
+                email: document.getElementById('regEmail').value,
+                password: document.getElementById('regPassword').value,
+                role: document.getElementById('regRole').value
+            };
+
+            try {
+                const response = await fetch(`${AUTH_API}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    afficherMessage("🎉 Compte créé ! Vous pouvez vous connecter.", true);
+                    document.getElementById('formRegister').reset();
+                    document.getElementById('tab-login').click();
+                } else {
+                    afficherMessage("❌ Échec : " + (data.message || "Erreur d'inscription"), false);
+                }
+            } catch (error) {
+                afficherMessage("🌐 Impossible de joindre le serveur d'authentification.", false);
+            }
+        });
+
+        // --- TRAITEMENT DE LA CONNEXION ---
+        document.getElementById('formLogin').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            alertBox.classList.add('d-none');
+
+            const payload = {
+                email: document.getElementById('loginEmail').value,
+                password: document.getElementById('loginPassword').value
+            };
+
+            try {
+                const response = await fetch(`${AUTH_API}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    afficherMessage("🔓 Connexion réussie ! Redirection...", true);
+
+                    localStorage.setItem('userEmail', data.email);
+                    localStorage.setItem('userRole', data.role);
+
+                    setTimeout(() => {
+                        if (data.role === "Admin") {
+                            window.location.href = "/admin/index.html";
+                        } else if (data.role === "Prof") {
+                            window.location.href = "/prof/index.html";
+                        } else {
+                            window.location.href = "/etudiant/index.html";
+                        }
+                    }, 1500);
+
+                } else {
+                    afficherMessage("❌ " + (data.message || "Identifiants incorrects."), false);
+                }
+            } catch (error) {
+                afficherMessage("🌐 Erreur de communication avec le serveur.", false);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+@model IEnumerable<EMIT.Models.Utilisateur>
+
+@{
+    ViewData["Title"] = "Comptes utilisateurs";
+}
+
+<h1>Comptes utilisateurs</h1>
+
+@if (TempData["Succes"] != null)
+{
+    <div class="alert alert-success">@TempData["Succes"]</div>
+}
+
+<p>
+    <a asp-action="CreerAdministrateur" class="btn btn-primary">+ Créer un administrateur</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Rôle</th>
+            <th>Classe</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Nom</td>
+            <td>@item.Prenom</td>
+            <td>@item.Email</td>
+            <td>@item.Role</td>
+            <td>@item.Classe?.NomClasse</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdUtilisateur">Modifier</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdUtilisateur">Supprimer</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

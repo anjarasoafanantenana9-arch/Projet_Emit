@@ -1,0 +1,147 @@
+@{
+    ViewData["Title"] = "Emploi du Temps";
+    ViewData["Subtitle"] = "Chargement de votre classe...";
+}
+
+<div class="row g-3">
+
+    <div class="col-12">
+        <div class="card-custom h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <div class="card-title-custom m-0"><i class="bi bi-calendar-week"></i> Planning de la Semaine</div>
+                <button class="btn btn-sm btn-outline-primary px-2 py-1" style="border-radius: 5px; font-size: 0.72rem;" onclick="chargerPlanning()">
+                    <i class="bi bi-arrow-clockwise"></i> Actualiser
+                </button>
+            </div>
+
+            <div id="spinner" class="spinner-wrap d-none">
+                <span class="spinner-border spinner-border-sm"></span> Chargement de votre emploi du temps...
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-timetable m-0">
+                    <thead>
+                        <tr>
+                            <th>Lundi</th>
+                            <th>Mardi</th>
+                            <th>Mercredi</th>
+                            <th>Jeudi</th>
+                            <th>Vendredi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="day-1"></td>
+                            <td id="day-2"></td>
+                            <td id="day-3"></td>
+                            <td id="day-4"></td>
+                            <td id="day-5"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card-custom">
+            <div class="card-title-custom"><i class="bi bi-door-open"></i> Mes Salles cette semaine</div>
+            <div id="listeSalles">
+                <div class="text-muted" style="font-size: 0.75rem;">Les salles apparaîtront ici une fois l'emploi du temps chargé.</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        const API_URL = '/api/EmploiDuTemps';
+
+        function creerCourseWidget(cours) {
+            const div = document.createElement('div');
+            div.className = 'course-slot';
+            div.innerHTML = `
+                <div class="course-time"><i class="bi bi-clock"></i> ${cours.heureD?.substring(0,5) ?? ''} - ${cours.heureFin?.substring(0,5) ?? ''}</div>
+                <div class="course-matiere">${cours.nomMatiere ?? ('Matière #' + cours.idMat)}</div>
+                <div class="course-prof"><i class="bi bi-person-video3"></i> ${cours.nomProf ?? ('Enseignant #' + cours.idProf)}</div>
+                <span class="badge-salle"><i class="bi bi-door-open"></i> Salle ${cours.nomSalle ?? cours.idSalle}</span>
+            `;
+            return div;
+        }
+
+        function afficherSallesUtilisees(cours) {
+            const container = document.getElementById('listeSalles');
+            container.innerHTML = '';
+
+            if (!cours.length) {
+                container.innerHTML = '<div class="text-muted" style="font-size: 0.75rem;">Aucun cours planifié pour le moment.</div>';
+                return;
+            }
+
+            const sallesVues = new Map();
+            cours.forEach(c => {
+                const key = c.idSalle;
+                if (!sallesVues.has(key)) sallesVues.set(key, []);
+                sallesVues.get(key).push(c);
+            });
+
+            sallesVues.forEach((liste, idSalle) => {
+                const nomSalle = liste[0].nomSalle ?? ('Salle ' + idSalle);
+                const item = document.createElement('div');
+                item.className = 'salle-item';
+                item.innerHTML = `
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="salle-icon"><i class="bi bi-door-open"></i></div>
+                        <div>
+                            <div style="font-weight:600; color: var(--navy-dark);">${nomSalle}</div>
+                            <div style="font-size:0.7rem; color:#94a3b8;">${liste.length} cours cette semaine</div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        async function chargerPlanning() {
+            const spinner = document.getElementById('spinner');
+            spinner.classList.remove('d-none');
+
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`day-${i}`).innerHTML = '';
+            }
+
+            try {
+                const response = await fetch(API_URL, { credentials: 'same-origin' });
+                if (response.status === 401) throw new Error('Session expirée');
+                if (!response.ok) throw new Error('Erreur réseau');
+                const data = await response.json();
+
+                const parJour = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+                data.forEach(c => { if (parJour[c.jour]) parJour[c.jour].push(c); });
+
+                for (let i = 1; i <= 5; i++) {
+                    const cell = document.getElementById(`day-${i}`);
+                    if (parJour[i].length === 0) {
+                        cell.innerHTML = '<div class="empty-cell">Aucun cours</div>';
+                    } else {
+                        parJour[i]
+                            .sort((a, b) => a.heureD.localeCompare(b.heureD))
+                            .forEach(c => cell.appendChild(creerCourseWidget(c)));
+                    }
+                }
+
+                afficherSallesUtilisees(data);
+
+            } catch (error) {
+                for (let i = 1; i <= 5; i++) {
+                    document.getElementById(`day-${i}`).innerHTML = '<div class="empty-cell">—</div>';
+                }
+            } finally {
+                spinner.classList.add('d-none');
+            }
+        }
+
+        chargerPlanning();
+    </script>
+}

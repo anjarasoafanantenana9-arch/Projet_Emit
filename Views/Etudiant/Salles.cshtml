@@ -1,0 +1,35 @@
+@model List<EMIT.Models.Cours>
+@{
+    ViewData["Title"] = "Mes Salles";
+    ViewData["Subtitle"] = "Salles utilisées par votre classe cette semaine";
+    var parSalle = Model.GroupBy(c => c.Salle?.NomSalle ?? "Salle inconnue").OrderBy(g => g.Key).ToList();
+}
+
+<div class="row g-3">
+    @if (!parSalle.Any())
+    {
+        <div class="col-12">
+            <div class="card-custom">
+                <div class="text-muted" style="font-size: 0.8rem;">Aucune salle n'est encore associée à votre classe.</div>
+            </div>
+        </div>
+    }
+    else
+    {
+        foreach (var groupe in parSalle)
+        {
+            <div class="col-md-6">
+                <div class="card-custom">
+                    <div class="card-title-custom"><i class="bi bi-door-open"></i> @groupe.Key</div>
+                    @foreach (var cours in groupe.OrderBy(c => c.Jour).ThenBy(c => c.HeureDebut))
+                    {
+                        <div class="course-slot">
+                            <div class="course-time"><i class="bi bi-clock"></i> @cours.Jour — @cours.HeureDebut.ToString(@"hh\:mm") à @cours.HeureFin.ToString(@"hh\:mm")</div>
+                            <div class="course-matiere">@cours.Matiere?.NomMatiere</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>

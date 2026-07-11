@@ -1,0 +1,75 @@
+@model EMIT.ViewModels.ProfilEtudiantViewModel
+@{
+    ViewData["Title"] = "Mon Profil";
+    ViewData["Subtitle"] = "Vos informations personnelles";
+    var estComplet = !string.IsNullOrEmpty(Model.NumeroInscription) && Model.DateNaissance != null;
+}
+
+<div class="row g-3">
+    <div class="col-12">
+        <div class="card-custom" style="max-width: 620px;">
+
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div class="user-avatar" style="width: 52px; height: 52px; font-size: 1.1rem;">
+                    @(Model.Prenom.Length > 0 ? Model.Prenom.Substring(0, 1) : "")@(Model.Nom.Length > 0 ? Model.Nom.Substring(0, 1) : "")
+                </div>
+                <div>
+                    <h5 class="mb-0" style="color: var(--navy-dark);">@Model.Prenom @Model.Nom</h5>
+                    <span class="text-muted" style="font-size: 0.78rem;">@Model.Email</span>
+                </div>
+                @if (estComplet)
+                {
+                    <span class="badge bg-success-subtle text-success ms-auto" style="font-size: 0.7rem;"><i class="bi bi-check-circle"></i> Profil complet</span>
+                }
+                else
+                {
+                    <span class="badge bg-warning-subtle text-warning ms-auto" style="font-size: 0.7rem;"><i class="bi bi-exclamation-circle"></i> À compléter</span>
+                }
+            </div>
+
+            <div asp-validation-summary="All" class="text-danger mb-3" style="font-size: 0.8rem;"></div>
+
+            <form asp-action="Profil" method="post">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Nom" class="form-label"></label>
+                        <input asp-for="Nom" class="form-control form-control-sm" />
+                        <span asp-validation-for="Nom" class="text-danger" style="font-size: 0.72rem;"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Prenom" class="form-label"></label>
+                        <input asp-for="Prenom" class="form-control form-control-sm" />
+                        <span asp-validation-for="Prenom" class="text-danger" style="font-size: 0.72rem;"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="DateNaissance" class="form-label"></label>
+                        <input asp-for="DateNaissance" class="form-control form-control-sm" type="date" />
+                        <span asp-validation-for="DateNaissance" class="text-danger" style="font-size: 0.72rem;"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="NumeroInscription" class="form-label"></label>
+                        <input asp-for="NumeroInscription" class="form-control form-control-sm" placeholder="Ex : ETU2026-0142" />
+                        <span asp-validation-for="NumeroInscription" class="text-danger" style="font-size: 0.72rem;"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Mention" class="form-label"></label>
+                        <select asp-for="Mention" asp-items="ViewBag.Mention" class="form-select form-select-sm">
+                            <option value="">-- Sélectionner --</option>
+                        </select>
+                        <span asp-validation-for="Mention" class="text-danger" style="font-size: 0.72rem;"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="IdClasse" class="form-label"></label>
+                        <select asp-for="IdClasse" asp-items="ViewBag.IdClasse" class="form-select form-select-sm">
+                            <option value="">-- Sélectionner --</option>
+                        </select>
+                        <span asp-validation-for="IdClasse" class="text-danger" style="font-size: 0.72rem;"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-sm mt-4"><i class="bi bi-check2"></i> Enregistrer mes informations</button>
+            </form>
+
+        </div>
+    </div>
+</div>

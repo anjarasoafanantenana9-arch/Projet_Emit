@@ -1,24 +1,83 @@
 @model EMIT.Models.Utilisateur
-
 @{
-    ViewData["Title"] = "Espace Étudiant";
+    ViewData["Title"] = "Tableau de bord";
+    ViewData["Subtitle"] = "Vue d'ensemble de votre scolarité";
+    var nombreCours = (int)(ViewData["NombreCoursSemaine"] ?? 0);
+    var prochainCours = ViewData["ProchainCours"] as EMIT.Models.Cours;
+    var profilComplet = (bool)(ViewData["ProfilComplet"] ?? false);
 }
 
-<h1>Espace Étudiant</h1>
-
-<div class="card" style="max-width: 500px;">
-    <div class="card-body">
-        <h5 class="card-title">@Model.Prenom @Model.Nom</h5>
-        <p class="card-text">
-            <strong>ID utilisateur :</strong> @Model.IdUtilisateur<br />
-            <strong>Email :</strong> @Model.Email<br />
-            <strong>Rôle :</strong> @Model.Role<br />
-            <strong>Classe :</strong> @Model.Classe?.NomClasse<br />
-            <strong>Niveau :</strong> @Model.Classe?.Niveau?.NomNiveau
-        </p>
+@if (!profilComplet)
+{
+    <div class="alert alert-warning d-flex justify-content-between align-items-center py-2 mb-3" style="font-size: 0.8rem;">
+        <span><i class="bi bi-exclamation-circle"></i> Votre profil n'est pas complet (date de naissance / numéro d'inscription manquants).</span>
+        <a href="/Etudiant/Profil" class="btn btn-sm btn-warning">Compléter mon profil</a>
     </div>
-</div>
+}
 
-<div class="mt-4">
-    <a asp-controller="Cours" asp-action="Index" class="btn btn-primary">Voir mon planning</a>
+<div class="row g-3">
+
+    <div class="col-12">
+        <div class="card-custom">
+            <h5 class="mb-1" style="color: var(--navy-dark); font-weight: 700;">Bonjour, @Model.Prenom </h5>
+            <div class="text-muted" style="font-size: 0.78rem;">
+                Classe : <strong>@(Model.Classe?.NomClasse ?? "non renseignée")</strong>
+                @if (!string.IsNullOrEmpty(Model.Mention))
+                {
+                    <span> — Mention <strong>@Model.Mention</strong></span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card-custom stat-card">
+            <div class="stat-icon"><i class="bi bi-calendar-week"></i></div>
+            <div>
+                <div class="stat-value">@nombreCours</div>
+                <div class="stat-label">Cours cette semaine</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card-custom stat-card">
+            <div class="stat-icon"><i class="bi bi-mortarboard"></i></div>
+            <div>
+                <div class="stat-value">@(Model.Classe?.NomClasse ?? "—")</div>
+                <div class="stat-label">Ma classe</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card-custom stat-card">
+            <div class="stat-icon"><i class="bi bi-person-check"></i></div>
+            <div>
+                <div class="stat-value">@(profilComplet ? "Complet" : "À compléter")</div>
+                <div class="stat-label">Statut du profil</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card-custom">
+            <div class="card-title-custom"><i class="bi bi-clock-history"></i> Prochain cours</div>
+            @if (prochainCours == null)
+            {
+                <div class="text-muted" style="font-size: 0.8rem;">Aucun cours planifié pour le moment.</div>
+            }
+            else
+            {
+                <div class="course-slot" style="max-width: 380px;">
+                    <div class="course-time"><i class="bi bi-clock"></i> @prochainCours.Jour — @prochainCours.HeureDebut.ToString(@"hh\:mm") à @prochainCours.HeureFin.ToString(@"hh\:mm")</div>
+                    <div class="course-matiere">@prochainCours.Matiere?.NomMatiere</div>
+                    <div class="course-prof"><i class="bi bi-person-video3"></i> @prochainCours.Enseignant?.Prenom @prochainCours.Enseignant?.Nom</div>
+                    <span class="badge-salle"><i class="bi bi-door-open"></i> Salle @prochainCours.Salle?.NomSalle</span>
+                </div>
+            }
+            <a href="/Etudiant/EmploiDuTemps" class="btn btn-sm btn-outline-primary mt-3"><i class="bi bi-calendar3"></i> Voir tout mon emploi du temps</a>
+        </div>
+    </div>
+
 </div>

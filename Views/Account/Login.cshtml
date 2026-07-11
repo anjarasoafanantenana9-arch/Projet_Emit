@@ -32,8 +32,11 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Se connecter</button>
-    <a asp-action="Register" class="btn btn-link">Créer un compte</a>
 </form>
+
+<div class="mt-3">
+    <a asp-controller="Account" asp-action="Register" class="btn btn-link">Créer un compte</a>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

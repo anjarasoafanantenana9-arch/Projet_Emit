@@ -7,88 +7,75 @@
     <link rel="stylesheet" href="~/css/admin-cours.css" asp-append-version="true" />
 }
 
-<div id="alertBox" class="custom-alert d-none" role="alert"></div>
+<div id="alertBox" class="alert d-none mb-3 py-1.5 small" role="alert"></div>
 
-<div class="row g-4">
+<div class="row g-3">
     <div class="col-xl-4">
-        <div class="bento-form-card">
-            <div class="bento-form-header">
-                <h4 id="titreFormulaire" class="form-main-title">Planifier un Cours</h4>
-                <p class="form-subtitle">Assignez matières, classes, profs et salles.</p>
-            </div>
-
+        <div class="card-custom">
+            <div class="card-title-custom" id="titreFormulaire">Planifier un Cours</div>
             <form id="formPlanification">
-                <div class="form-section">
-                    <span class="section-tag">1. Période & Horaire</span>
-                    <div class="mb-3">
-                        <label for="jour" class="form-label-custom">Jour de la semaine</label>
-                        <select class="form-select-custom" id="jour" required>
-                            <option value="">Choisir un jour</option>
-                            <option value="0">Lundi</option>
-                            <option value="1">Mardi</option>
-                            <option value="2">Mercredi</option>
-                            <option value="3">Jeudi</option>
-                            <option value="4">Vendredi</option>
+                <div class="mb-3">
+                    <label for="jour" class="form-label">Jour de la semaine</label>
+                    <select class="form-select" id="jour" required>
+                        <option value="">-- Choisir un jour --</option>
+                        <option value="0">Lundi</option>
+                        <option value="1">Mardi</option>
+                        <option value="2">Mercredi</option>
+                        <option value="3">Jeudi</option>
+                        <option value="4">Vendredi</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="idMat" class="form-label">ID de la Matière</label>
+                    <select class="form-select" id="idMat"></select>
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <label for="heureD" class="form-label">Heure Début</label>
+                        <input type="time" class="form-control" id="heureD" value="08:00" required>
+                    </div>
+                    <div class="col-6">
+                        <label for="heureFin" class="form-label">Heure Fin</label>
+                        <input type="time" class="form-control" id="heureFin" value="10:00" required>
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <label for="filtreParcoursForm" class="form-label">Parcours</label>
+                        <select class="form-select" id="filtreParcoursForm" required>
+                            <option value="">-- Parcours --</option>
+                            <option value="AES">AES</option>
+                            <option value="INFORMATIQUE">INFORMATIQUE</option>
+                            <option value="RPM">RPM</option>
                         </select>
                     </div>
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <label for="heureD" class="form-label-custom">Début</label>
-                            <input type="time" class="form-control-custom" id="heureD" value="08:00" required>
-                        </div>
-                        <div class="col-6">
-                            <label for="heureFin" class="form-label-custom">Fin</label>
-                            <input type="time" class="form-control-custom" id="heureFin" value="10:00" required>
-                        </div>
-                    </div>
+                   
                 </div>
 
-                <div class="form-section">
-                    <span class="section-tag">2. Attribution</span>
-                    <div class="mb-3">
-                        <label for="idMat" class="form-label-custom">Matière</label>
-                        <select class="form-select-custom" id="idMat" required></select>
-                    </div>
-                    <div class="row g-2 mb-3">
-                        <div class="col-12">
-                            <label for="filtreParcoursForm" class="form-label-custom">Parcours</label>
-                            <select class="form-select-custom" id="filtreParcoursForm" required>
-                                <option value="">Choisir un parcours</option>
-                                <option value="AES">AES</option>
-                                <option value="INFORMATIQUE">INFORMATIQUE</option>
-                                <option value="RPM">RPM</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="idClasse" class="form-label-custom">Classe Target</label>
-                        <select class="form-select-custom" id="idClasse" required>
-                            <option value="">Sélectionner parcours d'abord</option>
-                        </select>
-                    </div>
+                <div class="mb-3">
+                    <label for="idClasse" class="form-label">Classe</label>
+                    <select class="form-select" id="idClasse" required>
+                        <option value="">-- Choisir d'abord parcours + niveau --</option>
+                    </select>
                 </div>
-
-                <div class="form-section">
-                    <span class="section-tag">3. Logistique & Contraintes</span>
-                    <div class="mb-3">
-                        <label for="idProf" class="form-label-custom">Enseignant responsable</label>
-                        <select class="form-select-custom" id="idProf" required></select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="idSalle" class="form-label-custom">Salle allouée</label>
-                        <select class="form-select-custom" id="idSalle" required></select>
-                    </div>
-                    <div class="derogation-box">
-                        <input type="checkbox" class="form-check-input-custom" id="derogation">
-                        <label class="form-check-label-custom" for="derogation">
-                            Dérogation exceptionnelle <span class="text-amber">(Mercredi apr-mid)</span>
-                        </label>
-                    </div>
+                <div class="mb-3">
+                    <label for="idProf" class="form-label">ID Enseignant</label>
+                    <select class="form-select" id="idProf"></select>
                 </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn-submit-premium" id="btnSubmit">Ajouter au planning</button>
-                    <button type="button" class="btn-cancel-premium d-none" id="btnAnnulerEdition">
+                <div class="mb-3">
+                    <label for="idSalle" class="form-label">ID Salle</label>
+                    <select class="form-select" id="idSalle"></select>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="derogation">
+                    <label class="form-check-label" for="derogation" style="font-size:0.75rem;">
+                        Dérogation exceptionnelle (mercredi après-midi)
+                    </label>
+                </div>
+                <div class="d-grid gap-2 mt-3">
+                    <button type="submit" class="btn btn-primary-custom" id="btnSubmit">Ajouter au planning</button>
+                    <button type="button" class="btn btn-outline-secondary d-none" id="btnAnnulerEdition" style="font-size:0.8rem;">
                         Annuler la modification
                     </button>
                 </div>
@@ -97,30 +84,24 @@
     </div>
 
     <div class="col-xl-8">
-        <div class="planning-view-card">
-            <div class="planning-header-bar">
-                <div>
-                    <h4 class="planning-main-title">Planning Hebdomadaire</h4>
-                </div>
-                <div class="planning-controls">
-                    <select class="form-select-custom select-sm-modern" id="filtreParcours">
-                        <option value="">Sélectionner un parcours</option>
-                        <option value="AES">AES</option>
-                        <option value="INFORMATIQUE">INFORMATIQUE</option>
-                        <option value="RPM">RPM</option>
-                    </select>
-                    <button class="btn-refresh-modern" onclick="chargerPlanning()">
-                        <i class="bi bi-arrow-clockwise"></i> Sync
-                    </button>
-                </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="card-title-custom m-0">Planning de la Semaine</div>
+            <div class="d-flex gap-2">
+                <select class="form-select form-select-sm" id="filtreParcours" style="width:170px;">
+                    <option value="">-- Choisir un parcours --</option>
+                    <option value="AES">AES</option>
+                    <option value="INFORMATIQUE">INFORMATIQUE</option>
+                    <option value="RPM">RPM</option>
+                </select>
+                <button class="btn btn-sm btn-outline-primary px-2 py-1" style="border-radius: 5px; font-size: 0.72rem;" onclick="chargerPlanning()">
+                    <i class="bi bi-arrow-clockwise"></i> Actualiser
+                </button>
             </div>
+        </div>
 
-            <div id="planningsParNiveau" class="planning-dynamic-content">
-                <div class="empty-state-modern">
-                    <i class="bi bi-calendar2-week"></i>
-                    <p>Sélectionnez un parcours ci-dessus pour projeter les emplois du temps.</p>
-                </div>
-            </div>
+        <!-- Une carte de planning sera générée dynamiquement ici pour CHAQUE niveau (L1, L2, L3...) -->
+        <div id="planningsParNiveau">
+            <div class="text-muted small">Sélectionnez un parcours pour afficher les emplois du temps.</div>
         </div>
     </div>
 </div>

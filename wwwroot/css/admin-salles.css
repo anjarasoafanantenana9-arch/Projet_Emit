@@ -1,0 +1,202 @@
+/* ===========================
+   Général
+=========================== */
+
+body{
+    background:#f4f6fb;
+    font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;
+}
+
+
+/* ===========================
+   Cards
+=========================== */
+
+.card{
+
+    border:none;
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+
+.card-header{
+
+    border:none;
+
+    font-weight:600;
+
+    padding:18px;
+
+}
+
+
+.card-body{
+
+    padding:25px;
+
+}
+
+
+/* ===========================
+   Formulaire
+=========================== */
+
+.form-label{
+
+    font-weight:600;
+
+    color:#555;
+
+}
+
+
+.form-control{
+
+    border-radius:8px;
+
+    height:45px;
+
+    border:1px solid #dcdcdc;
+
+}
+
+
+.form-control:focus{
+
+    border-color:#0d6efd;
+
+    box-shadow:0 0 0 .15rem rgba(13,110,253,.2);
+
+}
+
+
+/* ===========================
+   Boutons
+=========================== */
+
+.btn{
+
+    border-radius:8px;
+
+    font-weight:600;
+
+}
+
+
+.btn-primary{
+
+    background:#0d6efd;
+
+    border:none;
+
+}
+
+
+.btn-primary:hover{
+
+    background:#0b5ed7;
+
+}
+
+
+.btn-warning{
+
+    color:white;
+
+}
+
+
+.btn-warning:hover{
+
+    color:white;
+
+}
+
+
+.btn-danger{
+
+    margin-left:5px;
+
+}
+
+
+/* ===========================
+   Tableau
+=========================== */
+
+.table{
+
+    margin-bottom:0;
+
+}
+
+
+.table thead{
+
+    background:#f8f9fa;
+
+}
+
+
+.table th{
+
+    text-align:center;
+
+    vertical-align:middle;
+
+}
+
+
+.table td{
+
+    vertical-align:middle;
+
+    text-align:center;
+
+}
+
+
+.table tbody tr{
+
+    transition:.2s;
+
+}
+
+
+.table tbody tr:hover{
+
+    background:#f2f7ff;
+
+}
+
+
+/* ===========================
+   Alertes
+=========================== */
+
+.alert{
+
+    border-radius:8px;
+
+}
+
+
+/* ===========================
+   Responsive
+=========================== */
+
+@media(max-width:992px){
+
+    .card{
+
+        margin-bottom:20px;
+
+    }
+
+}

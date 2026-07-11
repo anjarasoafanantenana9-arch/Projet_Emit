@@ -1,0 +1,238 @@
+/* =================================
+   ADMIN - GESTION DES CLASSES
+   ================================= */
+
+
+.content-body {
+
+    padding: 20px;
+
+}
+
+
+
+/* Carte principale */
+
+.card-custom {
+
+    background: #fff;
+
+    border-radius: 12px;
+
+    padding: 20px;
+
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+
+    height: 100%;
+
+}
+
+
+
+
+.card-title-custom {
+
+    font-size: 1rem;
+
+    font-weight: 600;
+
+    color: #1e3a8a;
+
+    margin-bottom: 20px;
+
+}
+
+
+
+
+
+/* Formulaire */
+
+
+.form-label {
+
+    font-size: 0.85rem;
+
+    font-weight: 500;
+
+    color: #374151;
+
+}
+
+
+
+.form-control,
+.form-select {
+
+    border-radius: 8px;
+
+    font-size: 0.85rem;
+
+    padding: 9px 12px;
+
+}
+
+
+
+.form-control:focus,
+.form-select:focus {
+
+    border-color: #2563eb;
+
+    box-shadow: 0 0 0 0.15rem rgba(37,99,235,.15);
+
+}
+
+
+
+
+
+
+
+/* Bouton enregistrer */
+
+
+.btn-primary {
+
+    background-color: #2563eb;
+
+    border: none;
+
+    border-radius: 8px;
+
+    font-size: 0.85rem;
+
+}
+
+
+
+.btn-primary:hover {
+
+    background-color: #1d4ed8;
+
+}
+
+
+
+
+
+
+
+/* Tableau */
+
+
+.table {
+
+    font-size: 0.85rem;
+
+    margin-bottom: 0;
+
+}
+
+
+
+.table thead th {
+
+    background-color: #f3f4f6;
+
+    color: #374151;
+
+    font-weight: 600;
+
+    text-align: center;
+
+}
+
+
+
+.table tbody td {
+
+    vertical-align: middle;
+
+    text-align: center;
+
+}
+
+
+
+.table tbody tr:hover {
+
+    background-color: #f9fafb;
+
+}
+
+
+
+
+
+/* Boutons actions */
+
+
+.btn-warning {
+
+    font-size: 0.75rem;
+
+    border-radius: 6px;
+
+    padding: 5px 10px;
+
+}
+
+
+
+.btn-danger {
+
+    font-size: 0.75rem;
+
+    border-radius: 6px;
+
+    padding: 5px 10px;
+
+}
+
+
+
+
+
+.btn-outline-primary {
+
+    border-radius: 7px;
+
+    font-size: 0.8rem;
+
+}
+
+
+
+
+
+
+
+/* Responsive */
+
+@media(max-width:992px){
+
+
+    .content-body {
+
+        padding: 10px;
+
+    }
+
+
+
+    .card-custom {
+
+        margin-bottom: 15px;
+
+    }
+
+
+    table {
+
+        font-size: 0.75rem;
+
+    }
+
+
+}

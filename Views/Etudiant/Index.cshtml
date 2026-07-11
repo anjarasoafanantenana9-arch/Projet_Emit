@@ -1,0 +1,24 @@
+@model EMIT.Models.Utilisateur
+
+@{
+    ViewData["Title"] = "Espace Étudiant";
+}
+
+<h1>Espace Étudiant</h1>
+
+<div class="card" style="max-width: 500px;">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Prenom @Model.Nom</h5>
+        <p class="card-text">
+            <strong>ID utilisateur :</strong> @Model.IdUtilisateur<br />
+            <strong>Email :</strong> @Model.Email<br />
+            <strong>Rôle :</strong> @Model.Role<br />
+            <strong>Classe :</strong> @Model.Classe?.NomClasse<br />
+            <strong>Niveau :</strong> @Model.Classe?.Niveau?.NomNiveau
+        </p>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a asp-controller="Cours" asp-action="Index" class="btn btn-primary">Voir mon planning</a>
+</div>

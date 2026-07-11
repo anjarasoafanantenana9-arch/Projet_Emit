@@ -146,21 +146,14 @@ namespace EMIT.Controllers
             }
 
             // 2. Redirection automatique et dynamique selon le Rôle
-            if (utilisateur.Role == RoleUtilisateur.Enseignant)
+            return utilisateur.Role switch
             {
-                return RedirectToAction("Index", "Prof"); // Va chercher ProfController -> Index
-            }
-            else if (utilisateur.Role == RoleUtilisateur.Etudiant)
-            {
-                return RedirectToAction("Index", "Etudiant"); // Va chercher EtudiantController -> Index
-            }
-            else if (utilisateur.Role == RoleUtilisateur.Administrateur)
-            {
-                return RedirectToAction("Index", "Utilisateurs"); // Votre gestionnaire admin
-            }
-
-            // Sécurité par défaut vers la page d'accueil globale
-            return RedirectToAction("Index", "Home");
+                RoleUtilisateur.Etudiant => RedirectToAction("Index", "Etudiant"),
+                RoleUtilisateur.Enseignant => RedirectToAction("Index", "Prof"),
+                RoleUtilisateur.Administrateur => RedirectToAction("Index", "Admin"),
+                _ => RedirectToAction("Index", "Home")
+            };
+            
         }
 
         // ==========================================

@@ -158,6 +158,9 @@ namespace EMIT.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdUtilisateur"));
 
+                    b.Property<DateTime?>("DateNaissance")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -165,6 +168,10 @@ namespace EMIT.Migrations
 
                     b.Property<int?>("IdClasse")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Mention")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("MotDePasseHash")
                         .IsRequired()
@@ -174,6 +181,10 @@ namespace EMIT.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<string>("NumeroInscription")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
 
                     b.Property<string>("Prenom")
                         .IsRequired()

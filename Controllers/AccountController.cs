@@ -153,7 +153,6 @@ namespace EMIT.Controllers
                 RoleUtilisateur.Administrateur => RedirectToAction("Index", "Admin"),
                 _ => RedirectToAction("Index", "Home")
             };
-            
         }
 
         // ==========================================

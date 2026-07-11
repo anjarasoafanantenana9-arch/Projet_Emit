@@ -35,5 +35,16 @@ namespace EMIT.Models
 
         [ForeignKey(nameof(IdClasse))]
         public Classe? Classe { get; set; }
+
+        // Champs de profil complémentaires, renseignés par l'étudiant lui-même
+        // (non obligatoires à l'inscription, remplis ensuite depuis /Etudiant/Profil).
+        [DataType(DataType.Date)]
+        public DateTime? DateNaissance { get; set; }
+
+        [MaxLength(30)]
+        public string? NumeroInscription { get; set; }
+
+        [MaxLength(100)]
+        public string? Mention { get; set; }
     }
 }

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EMIT.Controllers
 {
-    [Authorize] // Il faut être connecté pour accéder à l'emploi du temps (RG03)
+    [Authorize]
     public class CoursController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -21,12 +21,15 @@ namespace EMIT.Controllers
             _validationService = validationService;
         }
 
-        // GET: Cours
-        // RG03 : l'Administrateur voit tout, l'Enseignant et l'Étudiant ne voient que leur propre planning
+        // GET: Cours (Ity ilay "Mes Cours" ho an'ny cours.cshtml)
         public async Task<IActionResult> Index()
         {
             var role = User.FindFirstValue(ClaimTypes.Role);
             var idUtilisateur = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            // Alaina ny anaran'ny mpampianatra tafiditra (ho an'ny Layout/Sidebar)
+            var nmp = User.FindFirstValue(ClaimTypes.Name);
+            ViewBag.NomEnseignant = nmp ?? "Nom Enseignant";
 
             IQueryable<Cours> requete = _context.Cours
                 .Include(c => c.Classe)
@@ -34,6 +37,7 @@ namespace EMIT.Controllers
                 .Include(c => c.Enseignant)
                 .Include(c => c.Matiere);
 
+            // Sivana: ny azy ihany no hita raha mpampianatra
             if (role == RoleUtilisateur.Enseignant.ToString())
             {
                 requete = requete.Where(c => c.IdEnseignant == idUtilisateur);
@@ -43,14 +47,26 @@ namespace EMIT.Controllers
                 var utilisateur = await _context.Utilisateurs.FindAsync(idUtilisateur);
                 requete = requete.Where(c => c.IdClasse == utilisateur!.IdClasse);
             }
-            // Administrateur : aucun filtre, vue complète
 
             var cours = await requete
                 .OrderBy(c => c.Jour)
                 .ThenBy(c => c.HeureDebut)
                 .ToListAsync();
 
+            // Mamerina ny pejy Index.cshtml (izay ho lasa cours.cshtml-nao)
             return View(cours);
+        }
+
+        // GET: Cours/Salles (Ity ny ho an'ny salles.cshtml)
+        public async Task<IActionResult> Salles()
+        {
+            var nmp = User.FindFirstValue(ClaimTypes.Name);
+            ViewBag.NomEnseignant = nmp ?? "Nom Enseignant";
+
+            var salles = await _context.Salles.OrderBy(s => s.NomSalle).ToListAsync();
+            ViewBag.CoursAnkehitriny = await _context.Cours.ToListAsync();
+
+            return View(salles);
         }
 
         // GET: Cours/Details/5
@@ -66,26 +82,23 @@ namespace EMIT.Controllers
                 .FirstOrDefaultAsync(m => m.IdCours == id);
 
             if (cours == null) return NotFound();
-
             if (!PeutConsulter(cours)) return Forbid();
 
             return View(cours);
         }
 
         // GET: Cours/Create
-        [Authorize(Roles = "Administrateur")] // RG02
+        [Authorize(Roles = "Administrateur")]
         public IActionResult Create()
         {
             RemplirListesDeroulantes();
             return View();
         }
 
-        // POST: Cours/Create
         [HttpPost]
         [Authorize(Roles = "Administrateur")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-            [Bind("IdClasse,IdSalle,IdEnseignant,IdMatiere,Jour,HeureDebut,HeureFin,DerogationExceptionnelle")] Cours cours)
+        public async Task<IActionResult> Create([Bind("IdClasse,IdSalle,IdEnseignant,IdMatiere,Jour,HeureDebut,HeureFin,DerogationExceptionnelle")] Cours cours)
         {
             if (ModelState.IsValid)
             {
@@ -103,7 +116,6 @@ namespace EMIT.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
-
             RemplirListesDeroulantes(cours);
             return View(cours);
         }
@@ -113,21 +125,16 @@ namespace EMIT.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
-
             var cours = await _context.Cours.FindAsync(id);
             if (cours == null) return NotFound();
-
             RemplirListesDeroulantes(cours);
             return View(cours);
         }
 
-        // POST: Cours/Edit/5
         [HttpPost]
         [Authorize(Roles = "Administrateur")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(
-            int id,
-            [Bind("IdCours,IdClasse,IdSalle,IdEnseignant,IdMatiere,Jour,HeureDebut,HeureFin,DerogationExceptionnelle")] Cours cours)
+        public async Task<IActionResult> Edit(int id, [Bind("IdCours,IdClasse,IdSalle,IdEnseignant,IdMatiere,Jour,HeureDebut,HeureFin,DerogationExceptionnelle")] Cours cours)
         {
             if (id != cours.IdCours) return NotFound();
 
@@ -148,15 +155,13 @@ namespace EMIT.Controllers
                     }
                     catch (DbUpdateConcurrencyException)
                     {
-                        if (!_context.Cours.Any(e => e.IdCours == cours.IdCours))
-                            return NotFound();
+                        if (!_context.Cours.Any(e => e.IdCours == cours.IdCours)) return NotFound();
                         throw;
                     }
                     TempData["Succes"] = "Le cours a été modifié avec succès.";
                     return RedirectToAction(nameof(Index));
                 }
             }
-
             RemplirListesDeroulantes(cours);
             return View(cours);
         }
@@ -166,20 +171,16 @@ namespace EMIT.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
-
             var cours = await _context.Cours
                 .Include(c => c.Classe)
                 .Include(c => c.Salle)
                 .Include(c => c.Enseignant)
                 .Include(c => c.Matiere)
                 .FirstOrDefaultAsync(m => m.IdCours == id);
-
             if (cours == null) return NotFound();
-
             return View(cours);
         }
 
-        // POST: Cours/Delete/5
         [HttpPost, ActionName("Delete")]
         [Authorize(Roles = "Administrateur")]
         [ValidateAntiForgeryToken]
@@ -200,16 +201,13 @@ namespace EMIT.Controllers
             if (role == RoleUtilisateur.Administrateur.ToString()) return true;
 
             var idUtilisateur = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-            if (role == RoleUtilisateur.Enseignant.ToString())
-                return cours.IdEnseignant == idUtilisateur;
+            if (role == RoleUtilisateur.Enseignant.ToString()) return cours.IdEnseignant == idUtilisateur;
 
             if (role == RoleUtilisateur.Etudiant.ToString())
             {
                 var idClasse = _context.Utilisateurs.Find(idUtilisateur)?.IdClasse;
                 return cours.IdClasse == idClasse;
             }
-
             return false;
         }
 

@@ -1,23 +1,99 @@
 @model EMIT.Models.Enseignant
 
 @{
-    ViewData["Title"] = "Espace Enseignant";
+    ViewData["Title"] = "Espace Enseignant - Tableau de bord";
+
+    // Créneaux horaires standards de l'établissement (RG10)
+    var creneaux = new (TimeSpan Debut, TimeSpan Fin)[]
+    {
+        (new TimeSpan(8, 0, 0), new TimeSpan(10, 0, 0)),
+        (new TimeSpan(10, 15, 0), new TimeSpan(12, 15, 0)),
+        (new TimeSpan(14, 0, 0), new TimeSpan(16, 0, 0)),
+        (new TimeSpan(16, 15, 0), new TimeSpan(18, 15, 0)),
+    };
+
+    var jours = new[]
+    {
+        EMIT.Models.JourSemaine.Lundi,
+        EMIT.Models.JourSemaine.Mardi,
+        EMIT.Models.JourSemaine.Mercredi,
+        EMIT.Models.JourSemaine.Jeudi,
+        EMIT.Models.JourSemaine.Vendredi,
+    };
 }
 
-<h1>Espace Enseignant</h1>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="~/css/prof.css" rel="stylesheet">
+</head>
+<body>
 
-<div class="card" style="max-width: 500px;">
-    <div class="card-body">
-        <h5 class="card-title">@Model.Prenom @Model.Nom</h5>
-        <p class="card-text">
-            <strong>ID utilisateur :</strong> @Model.IdUtilisateur<br />
-            <strong>Email :</strong> @Model.Email<br />
-            <strong>Rôle :</strong> @Model.Role<br />
-            <strong>Plafond d'heures journalières :</strong> @Model.PlafondHeuresJournalieres h
-        </p>
+    @await Html.PartialAsync("_ProfSidebar", "Index")
+
+    <div class="main-content">
+
+        @await Html.PartialAsync("_ProfHeader", ("Mon Emploi du Temps", "Espace Enseignant > Planification"))
+
+        <div class="custom-card">
+            <div class="d-flex justify-content-between mb-4">
+                <h5 class="fw-bold">Planning de la Semaine</h5>
+                <a asp-action="Index" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-arrow-clockwise"></i> Actualiser
+                </a>
+            </div>
+
+            <table class="table table-bordered table-schedule">
+                <thead>
+                    <tr>
+                        <th class="time-column">Horaires</th>
+                        <th>Lundi</th>
+                        <th>Mardi</th>
+                        <th>Mercredi</th>
+                        <th>Jeudi</th>
+                        <th>Vendredi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var i = 0; i < creneaux.Length; i++)
+                    {
+                        var creneau = creneaux[i];
+                        <tr>
+                            <td class="time-column">@creneau.Debut.ToString(@"hh\:mm") - @creneau.Fin.ToString(@"hh\:mm")</td>
+                            @foreach (var jour in jours)
+                            {
+                                var coursDuCreneau = Model.Cours
+                                    .FirstOrDefault(c => c.Jour == jour && c.HeureDebut == creneau.Debut);
+
+                                <td>
+                                    @if (coursDuCreneau != null)
+                                    {
+                                        <div class="fw-bold text-primary small">@coursDuCreneau.Matiere?.NomMatiere</div>
+                                        <div class="text-muted small">@coursDuCreneau.Classe?.NomClasse - @coursDuCreneau.Salle?.NomSalle</div>
+                                    }
+                                </td>
+                            }
+                        </tr>
+
+                        @* Pause déjeuner entre le créneau du matin et celui de l'après-midi *@
+                        if (i == 1 && creneaux.Length > 2)
+                        {
+                            <tr class="table-light">
+                                <td colspan="6">PAUSE DÉJEUNER</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
     </div>
-</div>
 
-<div class="mt-4">
-    <a asp-controller="Cours" asp-action="Index" class="btn btn-primary">Voir mon planning</a>
-</div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

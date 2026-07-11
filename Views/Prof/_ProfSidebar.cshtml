@@ -1,0 +1,50 @@
+@* Modèle : nom de l'action active ("Index", "Cours", "Salles", "Profil") *@
+@model string
+
+<div class="sidebar">
+    <div class="sidebar-brand">
+        <img src="~/images/emit-logo.png" alt="Logo EMIT">
+    </div>
+
+    <div class="sidebar-menu">
+        <a asp-controller="Prof" asp-action="Index"
+           class="nav-link-custom @(Model == "Index" ? "active" : "")">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+
+        <div class="menu-label">Enseignant</div>
+
+        <a asp-controller="Prof" asp-action="Index"
+           class="nav-link-custom @(Model == "Index" ? "active" : "")">
+            <i class="bi bi-calendar3"></i> Emploi du Temps
+        </a>
+
+        <a asp-controller="Prof" asp-action="Cours"
+           class="nav-link-custom @(Model == "Cours" ? "active" : "")">
+            <i class="bi bi-book"></i> Mes Cours
+        </a>
+
+        <a asp-controller="Prof" asp-action="Salles"
+           class="nav-link-custom @(Model == "Salles" ? "active" : "")">
+            <i class="bi bi-building"></i> Salles
+        </a>
+
+        <a href="#" class="nav-link-custom disabled" title="Bientôt disponible">
+            <i class="bi bi-bell"></i> Notification
+        </a>
+
+        <div class="menu-label">Paramètres</div>
+
+        <a asp-controller="Prof" asp-action="Profil"
+           class="nav-link-custom @(Model == "Profil" ? "active" : "")">
+            <i class="bi bi-person-gear"></i> Profil
+        </a>
+
+        <form asp-controller="Account" asp-action="Logout" method="post" class="mt-4">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="nav-link-custom text-danger border-0 bg-transparent w-100 text-start">
+                <i class="bi bi-box-arrow-left"></i> Déconnexion
+            </button>
+        </form>
+    </div>
+</div>

@@ -1,25 +1,95 @@
-@model EMIT.Models.Utilisateur
 
 @{
-    ViewData["Title"] = "Espace Administrateur";
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Dashboard";
 }
 
-<h1>Espace Administrateur</h1>
+@section Styles{
+    <link rel="stylesheet" href="~/css/admin-dashboard.css" />
+}
 
-<div class="card" style="max-width: 500px;">
-    <div class="card-body">
-        <h5 class="card-title">@Model.Prenom @Model.Nom</h5>
-        <p class="card-text">
-            <strong>ID utilisateur :</strong> @Model.IdUtilisateur<br />
-            <strong>Email :</strong> @Model.Email<br />
-            <strong>Rôle :</strong> @Model.Role
-        </p>
+<div class="content-body">
+    <header class="dashboard-header">
+        <div>
+            <h3 class="dashboard-title">Tableau de bord</h3>
+            <p class="dashboard-subtitle">Vue d'ensemble et métriques de la plateforme.</p>
+        </div>
+    </header>
+
+    <div class="metrics-grid">
+        <div class="stat-card theme-blue">
+            <div class="icon-wrapper">
+                <i class="bi bi-person-video3"></i>
+            </div>
+            <div class="stat-content">
+                <span class="stat-label">Enseignants</span>
+                <h2 id="totalEnseignants" class="stat-value">0</h2>
+            </div>
+        </div>
+
+        <div class="stat-card theme-green">
+            <div class="icon-wrapper">
+                <i class="bi bi-mortarboard"></i>
+            </div>
+            <div class="stat-content">
+                <span class="stat-label">Classes</span>
+                <h2 id="totalClasses" class="stat-value">0</h2>
+            </div>
+        </div>
+
+        <div class="stat-card theme-amber">
+            <div class="icon-wrapper">
+                <i class="bi bi-door-open"></i>
+            </div>
+            <div class="stat-content">
+                <span class="stat-label">Salles</span>
+                <h2 id="totalSalles" class="stat-value">0</h2>
+            </div>
+        </div>
+
+        <div class="stat-card theme-purple">
+            <div class="icon-wrapper">
+                <i class="bi bi-book"></i>
+            </div>
+            <div class="stat-content">
+                <span class="stat-label">Matières</span>
+                <h2 id="totalMatieres" class="stat-value">0</h2>
+            </div>
+        </div>
+
+        <div class="stat-card theme-rose">
+            <div class="icon-wrapper">
+                <i class="bi bi-calendar3"></i>
+            </div>
+            <div class="stat-content">
+                <span class="stat-label">Cours</span>
+                <h2 id="totalCours" class="stat-value">0</h2>
+            </div>
+        </div>
+
+        <div class="stat-card theme-cyan">
+            <div class="icon-wrapper">
+                <i class="bi bi-people"></i>
+            </div>
+            <div class="stat-content">
+                <span class="stat-label">Étudiants</span>
+                <h2 id="totalEtudiants" class="stat-value">0</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-chart-container">
+        <div class="chart-header">
+            <h5>Répartition du système</h5>
+            <span class="chart-badge">En temps réel</span>
+        </div>
+        <div class="chart-wrapper">
+            <canvas id="dashboardChart"></canvas>
+        </div>
     </div>
 </div>
 
-<div class="mt-4">
-    <a asp-controller="Cours" asp-action="Index" class="btn btn-primary">Gérer l'emploi du temps</a>
-    <a asp-controller="Utilisateurs" asp-action="Index" class="btn btn-secondary">Gérer les comptes</a>
-    <a asp-controller="Salles" asp-action="Index" class="btn btn-secondary">Gérer les salles</a>
-    <a asp-controller="Niveaux" asp-action="Index" class="btn btn-secondary">Gérer les niveaux</a>
-</div>
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/js/admin-dashboard.js"></script>
+}

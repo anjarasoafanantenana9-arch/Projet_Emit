@@ -1,32 +1,44 @@
-using System.Security.Claims;
-using EMIT.Data;
-using Microsoft.AspNetCore.Authorization;
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace EMIT.Controllers
 {
-    [Authorize(Roles = "Administrateur")]
     public class AdminController : Controller
     {
-        private readonly ApplicationDbContext _context;
-
-        public AdminController(ApplicationDbContext context)
+        // Dashboard
+        public IActionResult Index()
         {
-            _context = context;
+            return View();
         }
 
-        // GET: Admin
-        public async Task<IActionResult> Index()
+        // Emploi du temps
+        public IActionResult EmploiTemps()
         {
-            int idUtilisateur = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            return View();
+        }
 
-            var admin = await _context.Utilisateurs
-                .FirstOrDefaultAsync(u => u.IdUtilisateur == idUtilisateur);
+        // Gestion des salles
+        public IActionResult Salles()
+        {
+            return View();
+        }
 
-            if (admin == null) return NotFound();
+        // Gestion des enseignants
+        public IActionResult Enseignants()
+        {
+            return View();
+        }
 
-            return View(admin);
+        // Gestion des classes
+        public IActionResult Classes()
+        {
+            return View();
+        }
+
+        // Gestion des matières
+        public IActionResult Matieres()
+        {
+            return View();
         }
     }
 }

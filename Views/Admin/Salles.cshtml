@@ -1,0 +1,135 @@
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Gestion des Salles";
+}
+
+<link rel="stylesheet" href="~/css/admin-salles.css" asp-append-version="true" />
+
+<div class="container-fluid mt-4">
+
+    <div class="row">
+
+        <!-- Formulaire -->
+        <div class="col-lg-4">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header bg-primary text-white">
+                    <h5>Ajouter une salle</h5>
+                </div>
+
+                <div class="card-body">
+
+                    <div id="alertBox" class="alert d-none"></div>
+
+                    <form id="formSalle">
+
+                        <input type="hidden" id="idSalle" />
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Nom de la salle
+                            </label>
+
+                            <input
+                                type="text"
+                                id="nomSalle"
+                                class="form-control"
+                                required />
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Capacité
+                            </label>
+
+                            <input
+                                type="number"
+                                id="capacite"
+                                class="form-control"
+                                min="1"
+                                required />
+
+                        </div>
+
+                        <button
+                            class="btn btn-primary w-100"
+                            type="submit">
+
+                            Enregistrer
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Tableau -->
+
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header bg-success text-white d-flex justify-content-between">
+
+                    <h5>Liste des salles</h5>
+
+                    <button
+                        class="btn btn-light btn-sm"
+                        onclick="chargerSalles()">
+
+                        Actualiser
+
+                    </button>
+
+                </div>
+
+                <div class="card-body">
+
+                    <table class="table table-bordered table-hover">
+
+                        <thead class="table-light">
+
+                            <tr>
+
+                                <th>ID</th>
+
+                                <th>Nom</th>
+
+                                <th>Capacité</th>
+
+                                <th width="180">Actions</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="tableSalles">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts{
+
+    <script src="~/js/admin-salles.js"></script>
+
+}

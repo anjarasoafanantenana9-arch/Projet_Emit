@@ -3,6 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EMIT.Models
 {
+    // Chaque classe appartient à un parcours précis -> détermine son propre EDT
+    public enum ParcoursType
+    {
+        AES,
+        INFORMATIQUE,
+        RPM
+    }
+
     // RG05 : une classe appartient obligatoirement à un niveau d'études précis
     public class Classe
     {
@@ -18,6 +26,10 @@ namespace EMIT.Models
 
         [ForeignKey(nameof(IdNiveau))]
         public Niveau? Niveau { get; set; }
+
+        // Chaque classe a un parcours -> son EDT est indépendant des autres parcours
+        [Required(ErrorMessage = "Le parcours est obligatoire.")]
+        public ParcoursType Parcours { get; set; }
 
         [Range(1, 500, ErrorMessage = "L'effectif doit être supérieur à 0.")]
         public int Effectif { get; set; }

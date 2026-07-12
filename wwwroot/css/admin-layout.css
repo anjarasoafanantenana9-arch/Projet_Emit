@@ -1,0 +1,242 @@
+*{
+    box-sizing:border-box;
+}
+
+
+body{
+
+    margin:0;
+
+    font-family:
+    "Segoe UI",
+    sans-serif;
+
+    background:#f8fafc;
+
+}
+
+
+
+.admin-wrapper{
+
+    display:flex;
+
+    min-height:100vh;
+
+}
+
+
+
+
+/* SIDEBAR */
+
+.sidebar{
+
+    width:250px;
+
+    background:#ffffff;
+
+    border-right:1px solid #e5e7eb;
+
+    position:fixed;
+
+    top:0;
+
+    bottom:0;
+
+}
+
+
+
+.sidebar-header{
+
+    height:90px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-bottom:1px solid #eee;
+
+}
+
+
+
+.logo{
+
+    width:100px;
+
+}
+
+
+
+.sidebar-menu{
+
+    list-style:none;
+
+    padding:20px 15px;
+
+}
+
+
+
+.sidebar-menu li{
+
+    margin-bottom:8px;
+
+}
+
+
+
+.sidebar-menu a{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:12px 15px;
+
+    color:#475569;
+
+    text-decoration:none;
+
+    border-radius:10px;
+
+    font-size:.9rem;
+
+    transition:.3s;
+
+}
+
+
+
+.sidebar-menu a:hover{
+
+    background:#eff6ff;
+
+    color:#2563eb;
+
+}
+
+
+
+.sidebar-menu i{
+
+    font-size:20px;
+
+}
+
+
+
+.menu-title{
+
+    margin:25px 10px 10px;
+
+    font-size:.7rem;
+
+    font-weight:700;
+
+    color:#94a3b8;
+
+}
+
+
+
+
+
+/* MAIN */
+
+.main-content{
+
+    margin-left:250px;
+
+    width:calc(100% - 250px);
+
+}
+
+
+
+
+/* TOPBAR */
+
+.topbar{
+
+    height:75px;
+
+    background:white;
+
+    border-bottom:1px solid #e5e7eb;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 30px;
+
+}
+
+
+
+.topbar h4{
+
+    margin:0;
+
+    font-weight:700;
+
+    color:#0f172a;
+
+}
+
+
+
+.profile{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    color:#64748b;
+
+}
+
+
+
+.avatar{
+
+    width:40px;
+
+    height:40px;
+
+    border-radius:50%;
+
+    background:#2563eb;
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-weight:bold;
+
+}
+
+
+
+
+
+.page-content{
+
+    padding:25px;
+
+}

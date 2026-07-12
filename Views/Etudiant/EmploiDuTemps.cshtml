@@ -54,6 +54,73 @@
 
 </div>
 
+<style>
+    .table-timetable {
+        border-collapse: separate;
+        border-spacing: 8px 0;
+    }
+
+    .table-timetable thead th {
+        text-align: center;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--navy-dark, #1e293b);
+        padding-bottom: 10px;
+        border: none;
+    }
+
+    .table-timetable tbody td {
+        vertical-align: top;
+        border: none;
+        padding: 0;
+        min-width: 160px;
+    }
+
+    .course-slot {
+        background: #eef4ff;
+        border-left: 3px solid #3b82f6;
+        border-radius: 6px;
+        padding: 8px 10px;
+        margin-bottom: 10px;
+        font-size: 0.75rem;
+        line-height: 1.5;
+    }
+
+    .course-time {
+        font-weight: 600;
+        color: #3b82f6;
+        margin-bottom: 2px;
+    }
+
+    .course-matiere {
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 2px;
+    }
+
+    .course-prof {
+        color: #64748b;
+        margin-bottom: 6px;
+    }
+
+    .badge-salle {
+        display: inline-block;
+        background: white;
+        border: 1px solid #dbeafe;
+        border-radius: 4px;
+        padding: 2px 8px;
+        font-size: 0.68rem;
+        color: #1e293b;
+    }
+
+    .empty-cell {
+        color: #cbd5e1;
+        font-size: 0.75rem;
+        text-align: center;
+        padding: 20px 0;
+    }
+</style>
+
 @section Scripts {
     <script>
         const API_URL = '/api/EmploiDuTemps';

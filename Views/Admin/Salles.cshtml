@@ -3,133 +3,141 @@
     ViewData["Title"] = "Gestion des Salles";
 }
 
-<link rel="stylesheet" href="~/css/admin-salles.css" asp-append-version="true" />
+@section Styles {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="~/css/admin-salles.css" asp-append-version="true" />
+}
 
-<div class="container-fluid mt-4">
+<div class="container-fluid py-2">
+    <div id="alertBox" class="alert d-none mb-4 py-3 rounded-4 shadow-sm small border-0 animate__animated animate__fadeIn" role="alert"></div>
 
-    <div class="row">
-
-        <!-- Formulaire -->
-        <div class="col-lg-4">
-
-            <div class="card shadow-sm">
-
-                <div class="card-header bg-primary text-white">
-                    <h5>Ajouter une salle</h5>
+   <div class="row g-4 mb-4">
+    
+    <div class="col-md-6 col-xl-4">
+        <div class="stat-card shadow-sm">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="stat-label">Total des Salles</span>
+                    <h3 class="stat-value m-0 mt-1" id="statTotalSalles">--</h3>
                 </div>
-
-                <div class="card-body">
-
-                    <div id="alertBox" class="alert d-none"></div>
-
-                    <form id="formSalle">
-
-                        <input type="hidden" id="idSalle" />
-
-                        <div class="mb-3">
-
-                            <label class="form-label">
-                                Nom de la salle
-                            </label>
-
-                            <input
-                                type="text"
-                                id="nomSalle"
-                                class="form-control"
-                                required />
-
-                        </div>
-
-                        <div class="mb-3">
-
-                            <label class="form-label">
-                                Capacité
-                            </label>
-
-                            <input
-                                type="number"
-                                id="capacite"
-                                class="form-control"
-                                min="1"
-                                required />
-
-                        </div>
-
-                        <button
-                            class="btn btn-primary w-100"
-                            type="submit">
-
-                            Enregistrer
-
-                        </button>
-
-                    </form>
-
+                <div class="stat-icon bg-primary-subtle text-primary">
+                    <i class="bi bi-door-open"></i>
                 </div>
-
             </div>
-
         </div>
+    </div>
 
-
-        <!-- Tableau -->
-
-        <div class="col-lg-8">
-
-            <div class="card shadow-sm">
-
-                <div class="card-header bg-success text-white d-flex justify-content-between">
-
-                    <h5>Liste des salles</h5>
-
-                    <button
-                        class="btn btn-light btn-sm"
-                        onclick="chargerSalles()">
-
-                        Actualiser
-
-                    </button>
-
+    <div class="col-md-6 col-xl-4">
+        <div class="stat-card shadow-sm">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="stat-label">Capacité Totale d'Accueil</span>
+                    <h3 class="stat-value m-0 mt-1" id="statCapaciteTotale">--</h3>
                 </div>
-
-                <div class="card-body">
-
-                    <table class="table table-bordered table-hover">
-
-                        <thead class="table-light">
-
-                            <tr>
-
-                                <th>ID</th>
-
-                                <th>Nom</th>
-
-                                <th>Capacité</th>
-
-                                <th width="180">Actions</th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody id="tableSalles">
-
-                        </tbody>
-
-                    </table>
-
+                <div class="stat-icon bg-success-subtle text-success">
+                    <i class="bi bi-people"></i>
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
 </div>
 
-@section Scripts{
+    <div class="row g-4">
+        
+        <div class="col-xl-4 col-lg-5">
+            <div class="card-custom shadow-sm">
+                <div class="card-header-modern mb-4">
+                    <div class="icon-shape bg-primary-subtle text-primary rounded-3 me-3">
+                        <i class="bi bi-plus-square-fill fs-5"></i>
+                    </div>
+                    <div>
+                        <h5 class="card-title-custom m-0" id="titreFormulaire">Ajouter une Nouvelle Salle</h5>
+                        <small class="text-muted fs-xs">Configurez les paramètres du local</small>
+                    </div>
+                </div>
 
+                <form id="formSalle" class="needs-validation" novalidate>
+                    <input type="hidden" id="idSalle" />
+
+                    <div class="mb-3">
+                        <label for="nomSalle" class="form-label-custom">Nom de la salle</label>
+                        <div class="input-group-custom">
+                            <span class="input-icon"><i class="bi bi-tag"></i></span>
+                            <input type="text" id="nomSalle" class="form-control-custom" placeholder="Ex: Salle B12, Amphi B..." required />
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="capacite" class="form-label-custom">Capacité (Nombre d'étudiants max)</label>
+                        <div class="input-group-custom">
+                            <span class="input-icon"><i class="bi bi-person-workspace"></i></span>
+                            <input type="number" id="capacite" class="form-control-custom" min="1" placeholder="Ex: 40" required />
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn-submit-modern" id="btnSubmit">
+                            <i class="bi bi-check-lg me-2"></i>Enregistrer la salle
+                        </button>
+                        <button type="button" class="btn btn-cancel-modern d-none py-2" id="btnAnnulerEdition">
+                            <i class="bi bi-x-circle me-1"></i> Annuler les modifications
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-xl-8 col-lg-7">
+            <div class="card-custom shadow-sm">
+                
+                <div class="d-flex flex-md-row flex-column justify-content-between align-items-md-center gap-3 mb-4">
+                    <div class="d-flex align-items-center">
+                        <div class="icon-shape bg-success-subtle text-success rounded-3 me-3">
+                            <i class="bi bi-collection fs-5"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title-custom m-0">Liste Générale des Salles</h5>
+                            <small class="text-muted fs-xs">Locaux d'examen et de cours magistraux</small>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2 align-items-center flex-grow-1 flex-md-grow-0" style="max-width: 320px;">
+                        <div class="input-group-custom bg-white shadow-none m-0 py-1">
+                            <span class="input-icon ps-3"><i class="bi bi-search fs-xs"></i></span>
+                            <input type="text" id="searchSalle" class="form-control-custom py-1" placeholder="Rechercher une salle..." onkeyup="filtrerSalles()" />
+                        </div>
+                        <button class="btn btn-modern-refresh" onclick="chargerSalles()" title="Actualiser la liste">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table-timetable align-middle">
+                        <thead>
+                            <tr>
+                                <th width="90">ID</th>
+                                <th>Nom de la Salle</th>
+                                <th>Capacité d'accueil</th>
+                                <th width="180" class="text-end pe-4">Options</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableSalles">
+                            </tbody>
+                    </table>
+                </div>
+                
+                <div id="emptySearchMessage" class="text-center p-5 d-none text-muted">
+                    <i class="bi bi-search fs-2 opacity-50 mb-2 d-block"></i>
+                    Aucune salle ne correspond à votre recherche.
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
     <script src="~/js/admin-salles.js"></script>
-
 }

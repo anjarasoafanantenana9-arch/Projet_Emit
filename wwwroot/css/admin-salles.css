@@ -1,202 +1,243 @@
-/* ===========================
-   Général
-=========================== */
-
-body{
-    background:#f4f6fb;
-    font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;
+:root {
+    --navy-dark: #0f172a;
+    --navy-muted: #64748b;
+    --emit-blue: #3b82f6;
+    --bg-main: #f8fafc;
+    --input-bg: #f8fafc;
+    --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    --pink-gradient: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
 }
 
-
-/* ===========================
-   Cards
-=========================== */
-
-.card{
-
-    border:none;
-
-    border-radius:15px;
-
-    overflow:hidden;
-
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
-
+body {
+    background-color: var(--bg-main);
+    font-family: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+    font-size: 0.85rem;
+    color: #334155;
 }
 
-
-.card-header{
-
-    border:none;
-
-    font-weight:600;
-
-    padding:18px;
-
+/* CARDS PREMIUMS */
+.card-custom {
+    background: #ffffff !important;
+    border-radius: 20px !important;
+    padding: 28px !important;
+    border: 1px solid rgba(226, 232, 240, 0.8) !important;
 }
 
-
-.card-body{
-
-    padding:25px;
-
+.card-header-modern {
+    display: flex;
+    align-items: center;
 }
 
+.icon-shape {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+}
+.bg-primary-subtle { background-color: #e0f2fe !important; color: #0284c7 !important;}
+.bg-success-subtle { background-color: #dcfce7 !important; color: #15803d !important;}
 
-/* ===========================
-   Formulaire
-=========================== */
-
-.form-label{
-
-    font-weight:600;
-
-    color:#555;
-
+.card-title-custom {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--navy-dark);
+    letter-spacing: -0.3px;
 }
 
+.fs-xs { font-size: 0.75rem !important; }
 
-.form-control{
-
-    border-radius:8px;
-
-    height:45px;
-
-    border:1px solid #dcdcdc;
-
+/* STATS CARDS */
+.stat-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 20px 24px;
+    border: 1px solid rgba(226, 232, 240, 0.7);
+    transition: transform 0.2s ease;
+}
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+.stat-label {
+    font-size: 0.78rem;
+    color: var(--navy-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+.stat-value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--navy-dark);
+}
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
 }
 
-
-.form-control:focus{
-
-    border-color:#0d6efd;
-
-    box-shadow:0 0 0 .15rem rgba(13,110,253,.2);
-
+/* CHAMPS DE FORMULAIRE AVEC EFFETS AU FOCUS */
+.form-label-custom {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 6px;
+    display: block;
 }
 
-
-/* ===========================
-   Boutons
-=========================== */
-
-.btn{
-
-    border-radius:8px;
-
-    font-weight:600;
-
+.input-group-custom {
+    display: flex;
+    align-items: center;
+    background: var(--input-bg);
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
 }
 
-
-.btn-primary{
-
-    background:#0d6efd;
-
-    border:none;
-
+.input-group-custom:focus-within {
+    border-color: var(--emit-blue);
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
 }
 
-
-.btn-primary:hover{
-
-    background:#0b5ed7;
-
+.input-icon {
+    padding-left: 14px;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    font-size: 0.98rem;
 }
 
-
-.btn-warning{
-
-    color:white;
-
+.form-control-custom {
+    width: 100%;
+    border: none !important;
+    background: transparent !important;
+    padding: 12px 14px 12px 10px;
+    font-size: 0.85rem;
+    color: var(--navy-dark);
+    font-weight: 500;
+    outline: none;
+    box-shadow: none !important;
 }
 
-
-.btn-warning:hover{
-
-    color:white;
-
+/* BOUTONS MODERNISÉS */
+.btn-submit-modern {
+    background: var(--accent-gradient) !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 13px !important;
+    border-radius: 12px !important;
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.btn-submit-modern:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(59, 130, 246, 0.3);
 }
 
+.btn-cancel-modern {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.82rem;
+    transition: all 0.2s;
+}
+.btn-cancel-modern:hover { background: #e2e8f0; color: var(--navy-dark); }
 
-.btn-danger{
+.btn-modern-refresh {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-modern-refresh:hover { background: #f8fafc; border-color: #cbd5e1; }
 
-    margin-left:5px;
-
+/* TABLEAU ULTRA NET */
+.table-timetable {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
 }
 
-
-/* ===========================
-   Tableau
-=========================== */
-
-.table{
-
-    margin-bottom:0;
-
+.table-timetable th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 16px;
+    border-bottom: 2px solid #edf2f7;
 }
 
-
-.table thead{
-
-    background:#f8f9fa;
-
+.table-timetable td {
+    padding: 16px;
+    color: #334155;
+    font-weight: 500;
+    border-bottom: 1px solid #f1f5f9;
 }
 
-
-.table th{
-
-    text-align:center;
-
-    vertical-align:middle;
-
+.table-timetable tbody tr:hover td {
+    background-color: #f8fafc;
 }
 
-
-.table td{
-
-    vertical-align:middle;
-
-    text-align:center;
-
+/* BADGES ET ACTIONS */
+.badge-capacity {
+    background-color: #f0fdf4;
+    color: #16a34a;
+    padding: 5px 12px;
+    font-weight: 700;
+    font-size: 0.78rem;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
-
-.table tbody tr{
-
-    transition:.2s;
-
+.btn-action-edit {
+    color: #3b82f6;
+    background: #eff6ff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
 }
+.btn-action-edit:hover { background: #dbeafe; transform: scale(1.03); }
 
-
-.table tbody tr:hover{
-
-    background:#f2f7ff;
-
+.btn-action-delete {
+    color: #ef4444;
+    background: #fef2f2;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-left: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
 }
+.btn-action-delete:hover { background: #fee2e2; transform: scale(1.03); }
 
-
-/* ===========================
-   Alertes
-=========================== */
-
-.alert{
-
-    border-radius:8px;
-
-}
-
-
-/* ===========================
-   Responsive
-=========================== */
-
-@media(max-width:992px){
-
-    .card{
-
-        margin-bottom:20px;
-
-    }
-
+/* MODE ÉDITION INSTANTANÉ (BOUTON DEVIENT ROSE FLASHY EN MODIFICATION) */
+.btn-mode-edition {
+    background: var(--pink-gradient) !important;
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2) !important;
 }

@@ -3,14 +3,7 @@
 @{
     ViewData["Title"] = "Espace Enseignant - Tableau de bord";
 
-    // Créneaux horaires standards de l'établissement (RG10)
-    var creneaux = new (TimeSpan Debut, TimeSpan Fin)[]
-    {
-        (new TimeSpan(8, 0, 0), new TimeSpan(10, 0, 0)),
-        (new TimeSpan(10, 15, 0), new TimeSpan(12, 15, 0)),
-        (new TimeSpan(14, 0, 0), new TimeSpan(16, 0, 0)),
-        (new TimeSpan(16, 15, 0), new TimeSpan(18, 15, 0)),
-    };
+    var niveaux = (List<EMIT.Models.Niveau>)ViewData["Niveaux"]!;
 
     var jours = new[]
     {
@@ -20,6 +13,11 @@
         EMIT.Models.JourSemaine.Jeudi,
         EMIT.Models.JourSemaine.Vendredi,
     };
+
+    var joursLabels = new[] { "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi" };
+
+    // Un cours est "Matin" s'il commence avant midi, "Après-midi" sinon
+    bool EstMatin(TimeSpan heureDebut) => heureDebut < new TimeSpan(12, 0, 0);
 }
 
 <!DOCTYPE html>
@@ -31,6 +29,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <link href="~/css/prof.css" rel="stylesheet">
+    <link href="~/css/admin-cours.css" rel="stylesheet">
 </head>
 <body>
 
@@ -40,57 +39,104 @@
 
         @await Html.PartialAsync("_ProfHeader", ("Mon Emploi du Temps", "Espace Enseignant > Planification"))
 
-        <div class="custom-card">
-            <div class="d-flex justify-content-between mb-4">
-                <h5 class="fw-bold">Planning de la Semaine</h5>
-                <a asp-action="Index" class="btn btn-outline-primary btn-sm">
-                    <i class="bi bi-arrow-clockwise"></i> Actualiser
-                </a>
+        @if (!niveaux.Any())
+        {
+            <div class="custom-card">
+                <p class="text-muted mb-0">Aucun niveau trouvé.</p>
             </div>
+        }
 
-            <table class="table table-bordered table-schedule">
-                <thead>
-                    <tr>
-                        <th class="time-column">Horaires</th>
-                        <th>Lundi</th>
-                        <th>Mardi</th>
-                        <th>Mercredi</th>
-                        <th>Jeudi</th>
-                        <th>Vendredi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (var i = 0; i < creneaux.Length; i++)
-                    {
-                        var creneau = creneaux[i];
-                        <tr>
-                            <td class="time-column">@creneau.Debut.ToString(@"hh\:mm") - @creneau.Fin.ToString(@"hh\:mm")</td>
-                            @foreach (var jour in jours)
-                            {
-                                var coursDuCreneau = Model.Cours
-                                    .FirstOrDefault(c => c.Jour == jour && c.HeureDebut == creneau.Debut);
+        @foreach (var niveau in niveaux)
+        {
+            // On ne garde que les cours de CET enseignant (Model.Cours est déjà filtré côté controller)
+            // qui appartiennent à ce niveau précis
+            var coursDuNiveau = Model.Cours
+                .Where(c => c.Classe != null && c.Classe.IdNiveau == niveau.IdNiveau)
+                .ToList();
 
-                                <td>
-                                    @if (coursDuCreneau != null)
-                                    {
-                                        <div class="fw-bold text-primary small">@coursDuCreneau.Matiere?.NomMatiere</div>
-                                        <div class="text-muted small">@coursDuCreneau.Classe?.NomClasse - @coursDuCreneau.Salle?.NomSalle</div>
-                                    }
-                                </td>
-                            }
-                        </tr>
+            <div class="custom-card mb-3">
+                <div class="d-flex justify-content-between mb-3">
+                    <h5 class="fw-bold m-0">@niveau.NomNiveau</h5>
+                    <a asp-action="Index" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-arrow-clockwise"></i> Actualiser
+                    </a>
+                </div>
 
-                        @* Pause déjeuner entre le créneau du matin et celui de l'après-midi *@
-                        if (i == 1 && creneaux.Length > 2)
-                        {
-                            <tr class="table-light">
-                                <td colspan="6">PAUSE DÉJEUNER</td>
+                <div class="table-responsive">
+                    <table class="table table-timetable m-0">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                @foreach (var label in joursLabels)
+                                {
+                                    <th>@label</th>
+                                }
                             </tr>
-                        }
-                    }
-                </tbody>
-            </table>
-        </div>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="periode-label">Matin</td>
+                                @foreach (var jour in jours)
+                                {
+                                    var coursCellule = coursDuNiveau
+                                        .Where(c => c.Jour == jour && EstMatin(c.HeureDebut))
+                                        .ToList();
+
+                                    <td>
+                                        @foreach (var c in coursCellule)
+                                        {
+                                            <div class="course-slot">
+                                                <div class="course-time">
+                                                    <i class="bi bi-clock"></i>
+                                                    @c.HeureDebut.ToString(@"hh\:mm") - @c.HeureFin.ToString(@"hh\:mm")
+                                                </div>
+                                                <strong>@c.Matiere?.NomMatiere</strong><br>
+                                                Classe : @c.Classe?.NomClasse<br>
+                                                <span class="badge-salle">Salle @c.Salle?.NomSalle</span>
+                                            </div>
+                                        }
+                                    </td>
+                                }
+                            </tr>
+                            <tr>
+                                <td class="periode-label">Après-midi</td>
+                                @foreach (var jour in jours)
+                                {
+                                    var estMercrediApresMidi = jour == EMIT.Models.JourSemaine.Mercredi;
+                                    var coursCellule = coursDuNiveau
+                                        .Where(c => c.Jour == jour && !EstMatin(c.HeureDebut))
+                                        .ToList();
+
+                                    if (estMercrediApresMidi && !coursCellule.Any())
+                                    {
+                                        <td class="cell-bloquee">
+                                            <span class="cell-bloquee-texte">Bloqué<br>(sauf dérogation)</span>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            @foreach (var c in coursCellule)
+                                            {
+                                                <div class="course-slot">
+                                                    <div class="course-time">
+                                                        <i class="bi bi-clock"></i>
+                                                        @c.HeureDebut.ToString(@"hh\:mm") - @c.HeureFin.ToString(@"hh\:mm")
+                                                    </div>
+                                                    <strong>@c.Matiere?.NomMatiere</strong><br>
+                                                    Classe : @c.Classe?.NomClasse<br>
+                                                    <span class="badge-salle">Salle @c.Salle?.NomSalle</span>
+                                                </div>
+                                            }
+                                        </td>
+                                    }
+                                }
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
 
     </div>
 

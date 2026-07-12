@@ -9,5 +9,9 @@ namespace EMIT.Models
         public int PlafondHeuresJournalieres { get; set; } = 6;
 
         public ICollection<Cours> Cours { get; set; } = new List<Cours>();
+
+        // Un enseignant peut enseigner plusieurs matières (et une matière peut être enseignée
+        // par plusieurs enseignants) -> relation plusieurs-à-plusieurs
+        public ICollection<Matiere> Matieres { get; set; } = new List<Matiere>();
     }
 }

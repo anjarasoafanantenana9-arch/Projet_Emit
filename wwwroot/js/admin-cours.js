@@ -6,6 +6,7 @@ let idCoursEnEdition = null;
 
 let listeNiveaux = [];      // [{idNiveau, nomNiveau}, ...]
 let toutesLesClasses = [];  // [{idClasse, nomClasse, parcours, idNiveau}, ...]
+let toutLesEnseignants = []; // [{idUtilisateur, nom, prenom, idMatieres}, ...]
 
 const JOURS_LABELS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"];
 const joursIndexMap = { "Lundi":0, "Mardi":1, "Mercredi":2, "Jeudi":3, "Vendredi":4 };
@@ -63,10 +64,45 @@ function filtrerClassesDuFormulaire(){
 async function chargerEnseignants(){
     let response = await fetch(`${API}/enseignants`);
     let data = await response.json();
-    let select = document.getElementById("idProf");
-    data.forEach(e=>{
+    toutLesEnseignants = data;
+    remplirSelectEnseignants(data);
+}
+
+// Remplit le select #idProf avec la liste fournie (tous, ou filtrés par matière)
+function remplirSelectEnseignants(liste){
+    const select = document.getElementById("idProf");
+    const valeurActuelle = select.value;
+
+    if (liste.length === 0) {
+        select.innerHTML = `<option value="">-- Aucun enseignant pour cette matière --</option>`;
+        return;
+    }
+
+    select.innerHTML = `<option value="">-- Choisir un enseignant --</option>`;
+    liste.forEach(e=>{
         select.innerHTML += `<option value="${e.idUtilisateur}">${e.nom} ${e.prenom}</option>`;
     });
+
+    // Conserve la sélection précédente si elle est toujours valide dans la nouvelle liste
+    if (liste.some(e => String(e.idUtilisateur) === valeurActuelle)) {
+        select.value = valeurActuelle;
+    }
+}
+
+// Quand la matière change dans le formulaire : ne propose que les enseignants habilités
+function filtrerEnseignantsParMatiere(){
+    const idMat = document.getElementById("idMat").value;
+
+    if (!idMat) {
+        remplirSelectEnseignants(toutLesEnseignants);
+        return;
+    }
+
+    const enseignantsFiltres = toutLesEnseignants.filter(e =>
+        e.idMatieres && e.idMatieres.includes(parseInt(idMat))
+    );
+
+    remplirSelectEnseignants(enseignantsFiltres);
 }
 
 async function chargerSalles(){
@@ -205,6 +241,7 @@ function ouvrirEdition(c) {
 
     document.getElementById("jour").value = c.jour;
     document.getElementById("idMat").value = c.idMatiere;
+    filtrerEnseignantsParMatiere();
     document.getElementById("heureD").value = c.heureDebut.substring(0, 5);
     document.getElementById("heureFin").value = c.heureFin.substring(0, 5);
 
@@ -288,6 +325,7 @@ window.onload = async function(){
 document.getElementById("filtreParcours")?.addEventListener("change", chargerPlanning);
 document.getElementById("btnAnnulerEdition")?.addEventListener("click", annulerEdition);
 document.getElementById("filtreParcoursForm")?.addEventListener("change", filtrerClassesDuFormulaire);
+document.getElementById("idMat")?.addEventListener("change", filtrerEnseignantsParMatiere);
 
 document.getElementById("formPlanification").addEventListener("submit", async function(e){
     e.preventDefault();

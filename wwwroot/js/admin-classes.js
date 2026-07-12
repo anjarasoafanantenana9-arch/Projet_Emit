@@ -16,6 +16,7 @@ async function chargerNiveauxFormulaire(){
     });
 }
 
+
 // ---------- Chargement et affichage du tableau des classes ----------
 
 async function chargerClasses(){

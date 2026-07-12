@@ -44,10 +44,17 @@ namespace EMIT.Controllers
             enseignant.Cours = await _context.Cours
                 .Where(c => c.IdEnseignant == idUtilisateur)
                 .Include(c => c.Classe)
+                    .ThenInclude(cl => cl!.Niveau)
                 .Include(c => c.Salle)
                 .Include(c => c.Matiere)
                 .OrderBy(c => c.Jour)
                 .ThenBy(c => c.HeureDebut)
+                .ToListAsync();
+
+            // Une grille sera construite pour chaque niveau (L1, L2, L3...),
+            // remplie uniquement avec les cours de CET enseignant (déjà filtré ci-dessus)
+            ViewData["Niveaux"] = await _context.Niveaux
+                .OrderBy(n => n.NomNiveau)
                 .ToListAsync();
 
             return View(enseignant);

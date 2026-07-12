@@ -1,5 +1,6 @@
 using EMIT.Data;
 using EMIT.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Projet_Emit.Models.DTO;
@@ -11,6 +12,7 @@ namespace EMIT.Controllers.Api
     public class AdminEnseignantsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly PasswordHasher<Utilisateur> _passwordHasher = new();
 
 
         public AdminEnseignantsController(ApplicationDbContext context)
@@ -21,26 +23,44 @@ namespace EMIT.Controllers.Api
 
 
         // GET : api/admin/enseignants
-[HttpGet]
-public async Task<IActionResult> GetEnseignants()
-{
-    var enseignants = await _context.Enseignants
-        .Select(e => new EnseignantDTO
+        // GET : api/admin/enseignants?idMatiere=3  (filtre les enseignants habilités pour cette matière)
+        [HttpGet]
+        public async Task<IActionResult> GetEnseignants([FromQuery] int? idMatiere = null)
         {
-            IdUtilisateur = e.IdUtilisateur,
+            var query = _context.Enseignants
+                .Include(e => e.Matieres)
+                .AsQueryable();
 
-            Nom = e.Nom,
+            // Filtre utilisé par le formulaire de planification : quand on choisit une matière,
+            // on ne propose que les enseignants habilités à la donner
+            if (idMatiere.HasValue)
+            {
+                query = query.Where(e => e.Matieres.Any(m => m.IdMatiere == idMatiere.Value));
+            }
 
-            Prenom = e.Prenom,
+            var enseignants = await query
+                .Select(e => new EnseignantDTO
+                {
+                    IdUtilisateur = e.IdUtilisateur,
 
-            PlafondHeuresJournalieres = 
-                e.PlafondHeuresJournalieres
-        })
-        .ToListAsync();
+                    Nom = e.Nom,
+
+                    Prenom = e.Prenom,
+
+                    Email = e.Email,
+
+                    PlafondHeuresJournalieres =
+                        e.PlafondHeuresJournalieres,
+
+                    IdMatieres = e.Matieres.Select(m => m.IdMatiere).ToList(),
+
+                    NomsMatieres = e.Matieres.Select(m => m.NomMatiere).ToList()
+                })
+                .ToListAsync();
 
 
-    return Ok(enseignants);
-}
+            return Ok(enseignants);
+        }
 
 
 
@@ -52,6 +72,7 @@ public async Task<IActionResult> GetEnseignants()
 
             var enseignant = await _context.Enseignants
                 .Include(e => e.Cours)
+                .Include(e => e.Matieres)
                 .FirstOrDefaultAsync(e => e.IdUtilisateur == id);
 
 
@@ -76,44 +97,78 @@ public async Task<IActionResult> GetEnseignants()
 
         // POST : api/admin/enseignants
         [HttpPost]
-public async Task<IActionResult> AjouterEnseignant(
-    EnseignantDTO dto)
-{
+        public async Task<IActionResult> AjouterEnseignant(
+            EnseignantDTO dto)
+        {
 
-    if(!ModelState.IsValid)
-    {
-        return BadRequest(ModelState);
-    }
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            if (string.IsNullOrWhiteSpace(dto.Email))
+            {
+                return BadRequest(new { message = "L'email est obligatoire." });
+            }
 
+            if (string.IsNullOrWhiteSpace(dto.MotDePasse))
+            {
+                return BadRequest(new { message = "Le mot de passe est obligatoire à la création." });
+            }
 
-    var enseignant = new Enseignant
-    {
-        Nom = dto.Nom,
+            bool emailExiste = await _context.Utilisateurs
+                .AnyAsync(u => u.Email == dto.Email);
 
-        Prenom = dto.Prenom,
-
-        PlafondHeuresJournalieres =
-            dto.PlafondHeuresJournalieres,
-
-        Role = RoleUtilisateur.Enseignant
-    };
-
-
-
-    _context.Enseignants.Add(enseignant);
-
-
-    await _context.SaveChangesAsync();
+            if (emailExiste)
+            {
+                return BadRequest(new { message = "Cet email est déjà utilisé." });
+            }
 
 
+            var enseignant = new Enseignant
+            {
+                Nom = dto.Nom,
 
-    return Ok(new
-    {
-        message = "Enseignant ajouté avec succès"
-    });
+                Prenom = dto.Prenom,
 
-}
+                Email = dto.Email,
+
+                PlafondHeuresJournalieres =
+                    dto.PlafondHeuresJournalieres,
+
+                Role = RoleUtilisateur.Enseignant
+            };
+
+            enseignant.MotDePasseHash = _passwordHasher.HashPassword(enseignant, dto.MotDePasse);
+
+
+            // Assignation des matières choisies
+            if (dto.IdMatieres != null && dto.IdMatieres.Any())
+            {
+                var matieres = await _context.Matieres
+                    .Where(m => dto.IdMatieres.Contains(m.IdMatiere))
+                    .ToListAsync();
+
+                foreach (var matiere in matieres)
+                {
+                    enseignant.Matieres.Add(matiere);
+                }
+            }
+
+
+            _context.Enseignants.Add(enseignant);
+
+
+            await _context.SaveChangesAsync();
+
+
+
+            return Ok(new
+            {
+                message = "Enseignant ajouté avec succès"
+            });
+
+        }
 
 
 
@@ -123,45 +178,80 @@ public async Task<IActionResult> AjouterEnseignant(
 
 
         // PUT : api/admin/enseignants/1
-       [HttpPut("{id}")]
-public async Task<IActionResult> ModifierEnseignant(
-    int id,
-    EnseignantDTO dto)
-{
-
-    var enseignant = await _context.Enseignants
-        .FirstOrDefaultAsync(e => e.IdUtilisateur == id);
-
-
-
-    if (enseignant == null)
-    {
-        return NotFound(new
+        [HttpPut("{id}")]
+        public async Task<IActionResult> ModifierEnseignant(
+            int id,
+            EnseignantDTO dto)
         {
-            message = "Enseignant introuvable"
-        });
-    }
+
+            var enseignant = await _context.Enseignants
+                .Include(e => e.Matieres)
+                .FirstOrDefaultAsync(e => e.IdUtilisateur == id);
 
 
 
-    enseignant.Nom = dto.Nom;
-
-    enseignant.Prenom = dto.Prenom;
-
-    enseignant.PlafondHeuresJournalieres =
-        dto.PlafondHeuresJournalieres;
-
-
-
-    await _context.SaveChangesAsync();
+            if (enseignant == null)
+            {
+                return NotFound(new
+                {
+                    message = "Enseignant introuvable"
+                });
+            }
 
 
 
-    return Ok(new
-    {
-        message = "Enseignant modifié avec succès"
-    });
-}
+            enseignant.Nom = dto.Nom;
+
+            enseignant.Prenom = dto.Prenom;
+
+            if (!string.IsNullOrWhiteSpace(dto.Email) && dto.Email != enseignant.Email)
+            {
+                bool emailExiste = await _context.Utilisateurs
+                    .AnyAsync(u => u.Email == dto.Email && u.IdUtilisateur != id);
+
+                if (emailExiste)
+                {
+                    return BadRequest(new { message = "Cet email est déjà utilisé." });
+                }
+
+                enseignant.Email = dto.Email;
+            }
+
+            // Mot de passe changé uniquement si un nouveau a été saisi
+            if (!string.IsNullOrWhiteSpace(dto.MotDePasse))
+            {
+                enseignant.MotDePasseHash = _passwordHasher.HashPassword(enseignant, dto.MotDePasse);
+            }
+
+            enseignant.PlafondHeuresJournalieres =
+                dto.PlafondHeuresJournalieres;
+
+
+            // Remplace la liste des matières assignées par la nouvelle sélection
+            enseignant.Matieres.Clear();
+
+            if (dto.IdMatieres != null && dto.IdMatieres.Any())
+            {
+                var matieres = await _context.Matieres
+                    .Where(m => dto.IdMatieres.Contains(m.IdMatiere))
+                    .ToListAsync();
+
+                foreach (var matiere in matieres)
+                {
+                    enseignant.Matieres.Add(matiere);
+                }
+            }
+
+
+            await _context.SaveChangesAsync();
+
+
+
+            return Ok(new
+            {
+                message = "Enseignant modifié avec succès"
+            });
+        }
 
 
 

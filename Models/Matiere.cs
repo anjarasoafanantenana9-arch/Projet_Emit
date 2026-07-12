@@ -12,5 +12,8 @@ namespace EMIT.Models
         public string NomMatiere { get; set; } = string.Empty;
 
         public ICollection<Cours> Cours { get; set; } = new List<Cours>();
+
+        // Relation inverse : les enseignants habilités à donner cette matière
+        public ICollection<Enseignant> Enseignants { get; set; } = new List<Enseignant>();
     }
 }

@@ -6,7 +6,13 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Services MVC
-builder.Services.AddControllersWithViews();
+// Services MVC
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(
+            new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
 
 // Connexion PostgreSQL via Npgsql
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

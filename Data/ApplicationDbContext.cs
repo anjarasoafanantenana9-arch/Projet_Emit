@@ -69,6 +69,14 @@ namespace EMIT.Data
                 .WithMany(m => m.Cours)
                 .HasForeignKey(c => c.IdMatiere)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // AJOUTÉ : relation plusieurs-à-plusieurs entre Enseignant et Matiere.
+            // Un enseignant peut enseigner plusieurs matières, une matière peut être
+            // enseignée par plusieurs enseignants. Table pivot "EnseignantMatiere".
+            modelBuilder.Entity<Enseignant>()
+                .HasMany(e => e.Matieres)
+                .WithMany(m => m.Enseignants)
+                .UsingEntity(j => j.ToTable("EnseignantMatiere"));
         }
     }
 }
